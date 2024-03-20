@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections;
+
+
+namespace HashTable
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            /*
+                                        HashTable
+                => Non-Generic => Use Boxing/UnBoxing
+                => Store Data at key value pair
+                => each key must be unique
+                => like phone books or dictionaries
+                => it Use hash Function for generite slots and mapping with keies
+                => Big o =O(1)
+                => Does not maintain order 
+                => use for legacy code or APIs that require it
+            */
+
+
+
+            //                           WORDING WITH HASHTABLE
+
+
+            //Initialization
+            Hashtable Ht = new Hashtable();
+            Ht.Add("Key1", "Value1");
+            Ht.Add("Key2", "Value2");
+            Ht.Add("Key3", "Value3");
+            Ht.Add("Key4", "Value4");
+
+
+
+            //Access an Element
+            Console.WriteLine("Accessing Key1 : " + Ht["Key1"]);
+
+            //Modifying an element
+            Ht["Key2"] = "newValue";
+
+            //Removing an element
+            Ht.Remove("Key4");
+
+            //Iterating over element
+            Console.WriteLine("\n\nCurrent Hashtable contents:");
+            foreach(DictionaryEntry entry in Ht)
+            {
+                Console.WriteLine("Key : "+entry.Key+"\tValue : "+entry.Value);
+            }
+
+
+            Console.ReadKey();
+        }
+    }
+}

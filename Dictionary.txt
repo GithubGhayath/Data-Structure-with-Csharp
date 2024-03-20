@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace Dictionary
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            /*
+                                        Dictionary 
+                => Store data as pairs of key and values
+                => Dictionary <Tkey,Tvalue>
+                => Generic
+                => advance HasTable
+                => Use hash Function
+                => no boxint and unboxing
+                => Keys must be unique
+                => Big o = O(1)
+
+
+
+                                        |             Dictionary              |             Hash Table              |
+                                        -----------------------------------------------------------------------------
+                                        | Generic                             | Non Generic                         |
+                                        | Faster then (no (boxint/unboxing))  | Slow (boxint/unboxing)              |
+                                        | does not order element              | does not order element              |
+                                        | not thread safe                     | Some Thread safe                    |
+                                        |                                     |                                     |                   
+            */
+
+
+            //                               WORGING WITH DICTIONARY
+                
+            //Create the dictionary
+            Dictionary<string,int>FruitBasket = new Dictionary<string,int>();
+
+            //Adding element
+            FruitBasket.Add("Apple",5);
+            FruitBasket.Add("Banana", 2);
+            //The following commented line will casue an error because they key is repeated 
+            //FruitBasket.Add("Banana",2);
+            FruitBasket.Add("Orange", 10);
+
+
+            //Accessing and update element
+            FruitBasket["Apple"] = 8;
+
+
+            //Iterating through the dictionary
+            Console.WriteLine("Dictionaary content:");
+            foreach(KeyValuePair<string,int>kvp in FruitBasket)
+            {
+                Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
+            }
+
+            //Remonving an element
+            FruitBasket.Remove("Banana");
+            Console.WriteLine("\n\nDictionaary content After removing 'Banana':");
+            foreach (KeyValuePair<string, int> kvp in FruitBasket)
+            {
+                Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
+            }
+
+
+            //TryGetValue method return (true or false)
+            if(FruitBasket.TryGetValue("Apple",out int val))
+            {
+                Console.WriteLine("\n\nApple : " + val);
+            }
+            else
+            {
+                Console.WriteLine("\n\nThere is no fruit in bascet!");
+            }
+
+
+            //the following line will make exception error because Banana is not there
+            //Console.WriteLine($"Banana : {FruitBasket["Banana"]}");
+
+            if (FruitBasket.TryGetValue("\n\nBanana", out int vall))
+            {
+                Console.WriteLine("\n\nBanana : " + vall);
+            }
+            else
+            {
+                Console.WriteLine("\n\nThere is no fruit in basket!");
+            }
+
+
+
+
+            //Utilizing LINQ with Dictionaries
+
+            //using linq transform items
+            var FruitInfo = FruitBasket.Select(kvp => new { kvp.Key, kvp.Value });
+            Console.WriteLine(("\n\n\nTransformed Items :"));
+            foreach(var item in  FruitInfo) 
+            {
+                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            }
+
+            //Using LINQ to filter items 
+            var FiteredFruite = FruitBasket.Where(kvp => kvp.Value > 7);
+            Console.WriteLine(("\n\n\nFiltered Items >7 :"));
+            foreach (var item in FiteredFruite)
+            {
+                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            }
+
+            //Using LINQ to sort by value ASC
+            var SortedByQuantityASC = FruitBasket.OrderBy(kvp => kvp.Value);
+            Console.WriteLine(("\n\n\nSorted Items ASC :"));
+            foreach (var item in SortedByQuantityASC)
+            {
+                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            }
+
+            //Using LINQ to sort by value DESC
+            var SortedByQuantityDESC = FruitBasket.OrderByDescending(k => k.Value);
+            Console.WriteLine(("\n\n\nSorted Items DESC :"));
+            foreach (var item in SortedByQuantityASC)
+            {
+                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            }
+
+            //using LINQ to aggregate data
+            int TotalQuntity = FruitBasket.Sum(k => k.Value);
+            Console.WriteLine("\n\nTotal Quntity : " + TotalQuntity.ToString());
+
+
+
+            //Advanced LINQ with Dictionries
+            Dictionary<string, string> FruitCategory = new Dictionary<string, string>
+            {
+                {"Apple","Tree" },
+                {"Banana","Herb" },
+                {"Cherry","Tree" },
+                {"Strawberry","Bush" },
+                {"Raspberry","Bush" }
+            };
+            Console.WriteLine("\n\n\n\n");
+            var Category = FruitCategory.GroupBy(k => k.Value);
+            foreach(var Cat in Category) 
+            {
+                Console.WriteLine("Category : " + Cat.Key);
+                foreach(var group in Cat)
+                {
+                    Console.WriteLine(" - " + group.Key);
+                }
+            }
+
+            //Another Dictionary for Combined Queries
+            Dictionary<string, int> FruitBasket1 = new Dictionary<string, int>
+            {
+                {"Apple",5 },
+                {"Banana",2 },
+                {"Orange",7 }
+            };
+
+            //Combined LINQ queries
+            var SortedFilteredFruits = FruitBasket1
+                .Where(kvp => kvp.Value > 3)
+                .OrderBy(k => k.Key)
+                .Select(k => new { k.Key, k.Value });
+            Console.WriteLine("\n\n\nSorted And Filtered Fruites:");
+            foreach(var item in SortedFilteredFruits)
+            {
+                Console.WriteLine($"Fruit : {item.Key}, Quantity : {item.Value}");
+            }
+
+            Console.ReadKey();
+        }
+    }
+}

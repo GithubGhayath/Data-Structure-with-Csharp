@@ -1,0 +1,260 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace HashSet
+{
+
+    /*
+     *                                     HashSet<T>
+     *                 Generic Collection
+     *                 Desgined to store unique Elements
+     *                 Automatically ensures all elements are unique
+     *                 (no Indexing)
+    */
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //                     WORKING WITH HASHSET
+
+            //Create HashSet of string
+            HashSet<string> Names=new HashSet<string>();
+            
+            
+            //Adding elements to the HashSet
+            Names.Add("Ali");
+            Names.Add("Ghayath");
+            Names.Add("Maher");
+            Names.Add("Yara");
+            Names.Add("Ola");
+            Names.Add("Maya");
+            Names.Add("Zena");
+            Names.Add("Loay");
+
+
+            //Tryint to add a duplicate elements
+            Names.Add("Ola");
+            Names.Add("Maya");
+            Names.Add("Zena");
+            Names.Add("Loay");
+            //It will Ignore
+
+            //Displaying the elements in the HashSet
+            Console.WriteLine("Names in HashSet : ");
+            foreach(string name in Names)
+            {
+                Console.Write(name + " ");
+            }
+
+
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+            //Check Element in HashSet
+            Console.WriteLine("\n\n\nIs 'Ghayath' in HashSet : " + Names.Contains("Ghayath"));//return true
+            Console.WriteLine("Is 'Mazen' in HashSet : " + Names.Contains("Mazen"));//return false
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+            //Remove Elements from HashSet
+
+            Console.WriteLine("\n\n\n\nOrigin Elemnts : ");
+            Console.Write(string.Join(" , ", Names));
+
+            //Removing Ghayath from hashset 
+            Console.WriteLine("\n\nElements After Remove 'Ghayath' : ");
+            Names.Remove("Ghayath");
+            Console.Write(string.Join(" , ", Names));
+
+
+            //Removing All Elements Thet length < 4  
+            Console.WriteLine("\n\nElements After Remove Elements Thet length < 4  : ");
+            Names.RemoveWhere(N => N.Length < 4);
+            Console.Write(string.Join(" , ", Names));
+
+            //Remove All
+            Names.Clear();
+            Console.WriteLine("\n\nAfter Cleare : ");
+            Console.Write(string.Join(" , ", Names));
+
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+
+            //Use HashSet to remove Duplicates from Array
+            int[] Arr = { 1, 2, 3, 2, 1, 4, 1, 2, 3, 5, 4, 1, 2, 2, 5, 1, 1, 2, 5, 3, 12, 1, 4, 5, 52, 5 };
+            HashSet<int> UniquNumbers = new HashSet<int>(Arr);
+
+            Console.WriteLine("\n\nArray Elemnts : ");
+            Console.WriteLine(string.Join(", ", Arr));
+
+            Console.WriteLine("\n\nArray Elemnts After Remove Duplicate : ");
+            Console.WriteLine(string.Join(", ", UniquNumbers));
+
+
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+            //HashSet With LINQ 
+            HashSet<int> Numbers = new HashSet<int>(Arr);
+
+            //Using LINQ to filter out even numbers
+            var EvenNumbers = Numbers.Where(E => E % 2 == 0);
+            Console.WriteLine("\n\nEven Numbers : " + string.Join(" , ", EvenNumbers));
+
+            //Using LINQ to find numbers greater than 5
+            var NumbersGreaterThan5 = Numbers.Where(e => e >= 5);
+            Console.WriteLine("\n\nNumbers Greater Than 5 : " + string.Join(" , ", NumbersGreaterThan5));
+
+
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+            //Create and populating a HashSet of string
+            HashSet<string> names = new HashSet<string>(Names)
+            {
+                "Alice",
+                "Jane",
+                "Ghayath",
+                "Maher",
+                "Ali",
+                "Ola",
+                "Khaled",
+                "Roze",
+                "Charlie"
+            };
+
+            //Using LINQ to filter names that start with 'C'
+            var NamesStartWithC = names.Where(name => name.StartsWith("C"));
+            Console.WriteLine("\n\nNames Start With 'C' : " + string.Join(" , ", NamesStartWithC));
+
+
+            //Using LINQ to find names with length greater than 4 characters
+            var NamesThatGreaterThan4Characters = names.Where(name => name.Length > 4);
+            Console.WriteLine("\n\nNames That Greater Than 4 Characters : " + string.Join(" , ", NamesThatGreaterThan4Characters));
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+
+            //Set Operations in HashSet 
+    
+            /*
+             * Union : To combine the elements of two sets
+             * IntersectWith : To Find Common Elements Between Two Sets
+             * ExceptWith : To Remove Elements of one Set From Another
+             * SymmetricExciptWith : To Retain Elements Unique to Each Set
+            */
+
+            //1
+            HashSet<int> Numbers1 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers2 = new HashSet<int> { 3, 4, 5 };
+
+            //Union
+            Numbers1.UnionWith(Numbers2);
+            Console.WriteLine("\n\nHashSet1 Union with HashSet2 : " + string.Join(" , ", Numbers1));
+
+
+
+
+
+
+            //2
+            HashSet<int> Numbers3 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers4 = new HashSet<int> { 3, 4, 5 };
+
+            //InterSection
+            Numbers3.IntersectWith(Numbers4);
+            Console.WriteLine("\n\nHashSet3 Intersect with HashSet4 in : " + string.Join(" , ", Numbers3));
+
+
+
+
+
+            //3
+            HashSet<int> Numbers5 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers6 = new HashSet<int> { 3, 4, 5 };
+
+            //Difference
+            Numbers5.ExceptWith(Numbers6);
+            Console.WriteLine("\n\nHashSet5 Difference with HashSet6 in : " + string.Join(" , ", Numbers5));//1 , 2
+
+            Numbers6.ExceptWith(Numbers5);
+            Console.WriteLine("\n\nHashSet6 Difference with HashSet5 in : " + string.Join(" , ", Numbers6));//3 , 4 , 5
+
+
+
+
+
+            //4
+            HashSet<int> Numbers7 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers8 = new HashSet<int> { 3, 4, 5 };
+
+            //Symmetric Difference
+            Numbers7.SymmetricExceptWith(Numbers8);
+            Console.WriteLine("\n\nHashSet7 Symmetric with HashSet8 in : " + string.Join(" , ", Numbers7));//1 , 2 , 4 , 5
+
+
+
+            //==================================================================================================
+            //**************************************************************************************************
+            //==================================================================================================
+
+            //Compairing Sets with HashSet
+            /*
+             * SetEquals : To determine if two HashSet instances contain the same elements
+             * IsSubSetOf :To check if a Hashset is a subset of another collection
+             * IsSuperSetOf : To check if a Hashset is a superset of another collection
+             * Overlaps : To determine if two Hashset instances share any common elements
+            */
+
+            HashSet<int> Numbers9 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers10 = new HashSet<int> { 1, 2, 3 };
+            HashSet<int> Numbers11 = new HashSet<int> { 1, 2, 3, 4, 5 };
+
+            //1
+            //SetEquals
+            Console.WriteLine("\n\n Is HashSet9 Equals HashSet10 : " + Numbers9.SetEquals(Numbers10));//true
+            Console.WriteLine(" Is HashSet10 Equals HashSet11 : " + Numbers10.SetEquals(Numbers11));//false
+
+            //2
+            //IsSubsetof
+            Console.WriteLine("\n\nIs HashSet9 Sub From HashSet10 : " + Numbers9.IsSubsetOf(Numbers10));//true
+            Console.WriteLine("Is HashSet10 Sub From HashSet11 : " + Numbers10.IsSubsetOf(Numbers11));//true
+            Console.WriteLine("Is HashSet11 Sub From HashSet10 : " + Numbers11.IsSubsetOf(Numbers10));//false
+
+
+            //3
+            //IsSupersetof
+            Console.WriteLine("\n\nIs HashSet9 Super From HashSet10 : " + Numbers9.IsSupersetOf(Numbers10));//true
+            Console.WriteLine("Is HashSet10 Super From HashSet11 : " + Numbers10.IsSupersetOf(Numbers11));//false
+            Console.WriteLine("Is HashSet11 Super From HashSet10 : " + Numbers11.IsSupersetOf(Numbers10));//true
+
+            //4
+            //Overlaps
+            Console.WriteLine("\n\nIs HashSet9 Overlap with HashSet10 : " + Numbers9.Overlaps(Numbers10));//true
+            Console.WriteLine("Is HashSet10 Overlap with HashSet11 : " + Numbers10.Overlaps(Numbers11));//true
+
+
+
+            //Done By Ghayath....
+
+            Console.ReadKey();
+
+        }
+    }
+}
