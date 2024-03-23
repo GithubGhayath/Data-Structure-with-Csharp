@@ -1,0 +1,180 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SortedList
+{
+    /*
+     *                                      SortedList
+     *                          Part OF : Generic and non-Generic
+     *                      Store Elements as Key value Pair <Tkey,Tvalue>
+     *                     Kay must be unique     
+     *                     Sort data in ascending order and elements are sort during adding ==>automatically by key
+     *                     perform binary search on element ===>fast in retrival data and some slow in add and remove
+     *                     
+     *                     
+     *                     
+     *                                                |___________________________|_________________________|
+     *                                                |       List                |      Sorted List        |
+     *                                                |______________________________________________________ 
+     *                                                |     generic               |  Generic , non-generic  |
+     *                                                |Store elements in liner    |        Key Value Pair   |
+     *                                                |  Manually sort            | Automatically sort      |
+     *                                                |                           |   Based on Array        |
+     *                                                |                           |     and HashTable       |
+     *                                                |fast add and remove at end |sorted element effects   |
+     *                                                |
+     *                     
+    */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //              WORKING WITH SORTEDLIST 
+
+
+            SortedList<string,int> List=new SortedList<string,int>();
+
+            List.Add("Ghayath",5);
+            List.Add("Ali",3);
+            List.Add("Maya",1);
+            List.Add("Yara",0);
+            List.Add("Mazen",4);
+
+            //Accessing elements
+            Console.WriteLine("\nGhayath's Number is : " + List["Ghayath"]);
+
+            Console.WriteLine("\nIterating sortedlist element : ");
+            foreach(KeyValuePair<string,int> kvp in List)
+            {
+                Console.WriteLine($"Key : {kvp.Key}\tValur : {kvp.Value}");
+            }
+
+            //Removing an element
+            List.Remove("Ghayath");
+            List.RemoveAt(0);
+
+            Console.WriteLine("\nIterating sortedlist element After Remove : ");
+            foreach (KeyValuePair<string, int> kvp in List)
+            {
+                Console.WriteLine($"Key : {kvp.Key}\tValur : {kvp.Value}");
+            }
+
+            //LINQ with sorted list
+
+            //Initialize a sortedList with integer keys and string value
+            SortedList<int,string> SortedList= new SortedList<int,string>
+            {
+                {1,"One" },
+                {2,"Two" },
+                {3,"Three" },
+                {4,"Four" }
+            };
+
+            //Query using query Expression syntax
+            var QueryExpressionSyntex = from kvp in SortedList
+                                        where kvp.Key > 1
+                                        select kvp;
+
+            Console.WriteLine("\n\n\nQuery Expression Syntax Results : ");
+            foreach(var item in QueryExpressionSyntex)
+            {
+                Console.WriteLine($"{item.Key}:{item.Value}");//Expected : 2 ,3 ,4
+            }
+
+
+
+            //Qurey using method syntex
+            var MethodSyntex = SortedList.Where(k => k.Key > 1); //Filter keys greater than 1
+            Console.WriteLine("\nmethod syntex Results :");
+            foreach (var item in MethodSyntex)
+            {
+                Console.WriteLine($"{item.Key}:{item.Value}");//Expected : 2 ,3 ,4
+            }
+
+
+            //Filter ksy-value pairs with keys greate than a spcific value
+            int SpecificValue = 2;
+            var filteredByKey = SortedList.Where(k => k.Key > SpecificValue);
+            Console.WriteLine("\nEntries with keys greater than : " + SpecificValue);
+            foreach (var item in filteredByKey)
+            {
+                Console.WriteLine($"{item.Key}:{item.Value}");//Expected : 2 ,3 ,4
+            }
+
+
+
+            //Advance lINQ usage with SortedList: Grouping Elements
+
+
+            //Initialize a sortedList with integer keys and string value
+            SortedList<int, string> sortedLis = new SortedList<int, string>()
+            {
+                {1, "Apple"},
+                {2, "Banana"},
+                {3, "Cherry"},
+                {4, "Date"},
+                {5, "Grape"},
+                {6, "Fig"},
+                {7, "Elderberry"},
+            };
+
+            //Grouping by the length of the value
+            var Groups = sortedLis.GroupBy(k => k.Value.Length);
+            Console.WriteLine("\n\nGrouping by the length of the value : ");
+            foreach (var group in Groups) 
+            {
+                Console.Write("length " + group.Key+" :");
+                foreach (var item in group)
+                    Console.Write(item.Value + " , ");
+                Console.WriteLine();
+            }
+
+
+            //Advance Complex object perations using linq and sorted List
+            SortedList<int, clsEmployee> Employees = new SortedList<int, clsEmployee>()
+            {
+                {1,new clsEmployee("Alice","HR",5154515) },
+                {2,new clsEmployee("Bak","IT",5456) },
+                {3,new clsEmployee("Charlie","HR",65465) },
+                {4,new clsEmployee("Daisy","IT",464135) },
+                {5,new clsEmployee("Ethan","Markiting",5465) }
+            };
+
+            var Query = from E in Employees
+                        where E.Value.Department == "IT"
+                        orderby E.Value.Salary
+                        select E;
+            Console.WriteLine("IT Department Emploees Sorted by salary (Acending) :");
+            foreach(var employee in Query)
+            {
+                Console.WriteLine(employee.Value.Name);
+            }
+
+
+
+
+
+
+            Console.ReadKey();
+
+        }
+
+        public class clsEmployee
+        {
+            public string Name { get; set; }
+            public string Department { get; set; }
+            public decimal Salary { get; set; }
+            public clsEmployee(string name, string department, decimal salary)
+            {
+                Name = name;
+                Department = department;
+                Salary = salary;
+            }   
+        }
+
+    }
+}

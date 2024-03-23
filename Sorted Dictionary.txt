@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SortedDictionary
+{
+
+    /*
+     *                                                                              Sorted Dictionary
+     *                                            => Generic collection class that represents a collection of Key-Value Pairs Sorted by keys.
+     *                                            => It is implemented as a binary search tree which ensures that the keys are always sorted in ascending order.
+     *                                            => Sorted Dictionary offers efficient key-based preations like adding , removing , and searching for elements.
+     *                                            => Big O = o(log(n)) complexity for most operations.
+     *                                            
+     *                Differences Between
+     *                SortedDictionary and sorted list:
+     *                          *Implementation:
+     *                              SortedDictionary : Binary search tree
+     *                              sortedList : Array of key-value pair
+     *                          *Performance:
+     *                              SortedDictionary : offers efficient key-based operations with O(log(n)) Complexity
+     *                              SortedList : Provides efficient indexed access with O(log(n)) complexity for searching and insertion but may overhead during insertion/removal O(n)
+     *                          *Memory Usage:
+     *                              SortedDictionary : Typically consumes more memory due to its tree structure
+     *                              SortedList : may have better memory efficiency, especially for large collections
+     *                          *Insertion and Removal:
+     *                              SortedDictionary : O(log(n)) 
+     *                              SortedList : O(n)
+     *                          *Search:
+     *                               O(log(n))  ==> for each one of them                                          
+    */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //      WORKING WITH SORTED DICTIONARY
+
+            //Create a SortedDictionary with string keys and integer values
+            SortedDictionary<string,int> SortedDic = new SortedDictionary<string,int>();
+
+            //Adding elements to the SortedDictionary
+            SortedDic.Add("Apple",10);
+            SortedDic.Add("Banana",20);
+            SortedDic.Add("Orange",30);
+
+            //Displaying the contents of the SortedDictionary
+            Console.WriteLine("Contents of The SortedDictionary");
+            foreach(KeyValuePair<string,int> kvp in SortedDic)
+            {
+                Console.WriteLine($"Key : {kvp.Key}, Value : {kvp.Value}");
+            }
+
+            //Accessing values by key 
+            Console.WriteLine("\nAccessing Values by key : ");
+            Console.WriteLine($"Value of 'apple' : {SortedDic["Apple"]}");
+            Console.WriteLine($"Value of 'Orange' : {SortedDic["Orange"]}");
+
+
+            //Checking if a key exists
+            Console.WriteLine("\nChecking if a key exists:");
+            Console.WriteLine($"Contains 'Banana' : {SortedDic.ContainsKey("Banana")}");
+            Console.WriteLine($"Contains 'Grape' : {SortedDic.ContainsKey("Grape")}");
+
+            //Removing an element 
+            SortedDic.Remove("Banana");
+
+            //Displaying the contents of the SortedDictionary
+            Console.WriteLine("Contents of The SortedDictionary After Remove 'Banana' : ");
+            foreach (KeyValuePair<string, int> kvp in SortedDic)
+            {
+                Console.WriteLine($"Key : {kvp.Key}, Value : {kvp.Value}");
+            }
+
+            Console.ReadKey();
+
+        }
+    }
+}

@@ -1,0 +1,198 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace SortedSet
+{
+    internal class Program
+    {
+        /*
+         *                                                                  Sorted Set <T>
+         *                                            Collection class that represents a sorted set of elements.
+         *                                            Part of System.Collection.Generic
+         *                                            it Stores unique elements in sorted order
+         *                                            fast search insertion and removal operations 
+         *                                            Automatically maintains sorted order                                            
+        */
+        static void Main(string[] args)
+        {
+
+            //              Working with SortedSet
+
+
+            //Create a sortedSet of integers
+            SortedSet<int> Numbers=new SortedSet<int>();
+
+            //Add Elements to the sorted set
+            Numbers.Add(3);
+            Numbers.Add(4);
+            Numbers.Add(2);
+            Numbers.Add(3);
+            Numbers.Add(2);
+            Numbers.Add(1);
+            Numbers.Add(5);
+
+            //Display the elements of the sorted set
+            Console.WriteLine("The Elements in Sorted Set : " + string.Join(", ", Numbers));
+
+            //Check if an element exists in the sorted set
+            int target = 3;
+            if(Numbers.Contains(target))
+            {
+                Console.WriteLine($"\n\nNumber {target} exists in the sorted set");
+            }
+
+
+            //Remove an element from the sorted set
+            Numbers.Remove(3);
+
+            //Display the elements of the sorted set
+            Console.WriteLine("\n\nThe Elements in Sorted Set after remove 3 : " + string.Join(", ", Numbers));
+
+
+
+            //__________________________________________________________________________________________________________________________-
+            //***************************************************************************************************************************
+            //__________________________________________________________________________________________________________________________-
+
+
+            SortedSet<int> sortedSet = new SortedSet<int>() { 1, 2, 3, 4, 5 };
+
+            // Filtering elements greater than 2
+            var filteredSet = sortedSet.Where(x => x > 2);
+            Console.WriteLine("\n\n\n\nFiltered Set:");
+            foreach (var item in filteredSet)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();
+
+
+            // Sum of all elements
+            var sum = sortedSet.Sum();
+            Console.WriteLine("Sum of all elements: " + sum);
+
+
+            // Maximum and minimum elements
+            var maxElement = sortedSet.Max();
+            var minElement = sortedSet.Min();
+            Console.WriteLine("Maximum element: " + maxElement);
+            Console.WriteLine("Minimum element: " + minElement);
+
+
+            // Sorting the set in descending order
+            var descendingSet = sortedSet.OrderByDescending(x => x);
+            Console.WriteLine("Descending Sorted Set:");
+            foreach (var item in descendingSet)
+            {
+                Console.Write(item + " ");
+            }
+
+            //__________________________________________________________________________________________________________________________-
+            //***************************************************************************************************************************
+            //__________________________________________________________________________________________________________________________-
+
+
+            SortedSet<int> numbers = new SortedSet<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            // Find even numbers and project them to their square
+            var evenNumbersSquared = numbers.Where(x => x % 2 == 0).Select(x => x * x);
+            Console.WriteLine("\n\n\nSquares of even numbers:");
+            foreach (var item in evenNumbersSquared)
+            {
+                Console.Write(item + " ");
+            }
+
+
+            //__________________________________________________________________________________________________________________________-
+            //***************************************************************************************************************************
+            //__________________________________________________________________________________________________________________________-
+
+
+
+            SortedSet<int> set1 = new SortedSet<int>() { 1, 2, 3, 4, 5 };
+            SortedSet<int> set2 = new SortedSet<int>() { 3, 4, 5, 6, 7 };
+
+
+            // Union
+            SortedSet<int> unionSet = new SortedSet<int>(set1);
+            unionSet.UnionWith(set2);                        //Result :  1,2,3,4,5,6,7
+            Console.WriteLine("\n\n\n\nUnion:");
+            foreach (int item in unionSet)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();
+
+
+            // Intersection
+            SortedSet<int> intersectSet = new SortedSet<int>(set1);
+            intersectSet.IntersectWith(set2);              //Result : 3,4,5
+            Console.WriteLine("\nIntersection:");
+            foreach (int item in intersectSet)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();
+
+
+            // Difference
+            SortedSet<int> differenceSet = new SortedSet<int>(set1);
+            differenceSet.ExceptWith(set2);              //Result : 1,2
+            Console.WriteLine("\nDifference (set1 - set2):");
+            foreach (int item in differenceSet)
+            {
+                Console.Write(item + " ");
+            }
+            Console.WriteLine();
+
+
+            // Subset and Superset
+            Console.WriteLine("\nSubset:");
+            if (set1.IsSubsetOf(set2))    //false
+                Console.WriteLine("Set1 is a subset of Set2");
+            else
+                Console.WriteLine("Set1 is not a subset of Set2");
+
+
+            Console.WriteLine("\nSuperset:");
+            if (set1.IsSupersetOf(set2))   //false
+                Console.WriteLine("Set1 is a superset of Set2");
+            else
+                Console.WriteLine("Set1 is not a superset of Set2");
+
+
+
+
+
+            //__________________________________________________________________________________________________________________________-
+            //***************************************************************************************************************************
+            //__________________________________________________________________________________________________________________________-
+
+
+            SortedSet<int> set3 = new SortedSet<int>() { 1, 2, 3, 4, 5 };
+            SortedSet<int> set4 = new SortedSet<int>() { 3, 4, 5, 6, 7 };
+
+
+            // Check if set3 is equal to set4
+            bool areEqual = set3.SetEquals(set4);  // false
+            Console.WriteLine("\n\n\nAre set1 and set2 equal? " + areEqual);
+
+
+            // Check if set3 is a subset of set4
+            bool isSubset = set3.IsSubsetOf(set4);  //false
+            Console.WriteLine("Is set1 a subset of set2? " + isSubset);
+
+
+            // Check if set3 is a superset of set4
+            bool isSuperset = set3.IsSupersetOf(set4);  //false
+            Console.WriteLine("Is set1 a superset of set2? " + isSuperset);
+
+
+
+            Console.ReadKey();
+
+        }
+    }
+}
