@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Multiple
+{
+    /*
+            Introduction to Queue:
+                     A queue is a fundamental data structure that follows the First In,First Out (FIFO) principle.
+                     This means that the first element added to the queue will be the first one to be removed.
+                     It resembles a line of people waiting for a service where the first person to join the line is the first one to get served.
+
+            Implementing Queue in C#:
+                     In C#, you can use the Queue<T> class from the System.Collections.Generic namespace to implement a queue.
+                     The type T represents the type of elements in the queue.
+
+            Basic Operations:
+                     Enqueue: Adds an item to the end of the queue.
+                     Dequeue: Removes and returns the item at the beginning of the queue.
+                     Peek: Returns the item at the beginning of the queue without removing it.
+                     Clear: Removes all items from the queue.
+
+     */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Queue<string> queue = new Queue<string>();
+
+
+            // Enqueueing elements into the queue
+            queue.Enqueue("Alice");
+            queue.Enqueue("Bob");
+            queue.Enqueue("Charlie");
+
+
+            // Peeking at the first element
+            Console.WriteLine("First in line: " + queue.Peek());
+
+
+            // Dequeueing elements from the queue
+            Console.WriteLine("Served: " + queue.Dequeue());
+            Console.WriteLine("Served: " + queue.Dequeue());
+
+
+            // Checking if the queue is empty
+            if (queue.Count == 0)
+            {
+                Console.WriteLine("Queue is empty.");
+            }
+            else
+            {
+                Console.WriteLine("First in line: " + queue.Peek());
+            }
+
+
+            // Clearing the queue
+            queue.Clear();
+
+            Console.ReadKey();
+        }
+    }
+}

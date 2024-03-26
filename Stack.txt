@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Multiple
+{
+    /*
+            Introduction to Stack:
+                      A stack is a fundamental data structure that follows the Last In, First Out (LIFO) principle.
+                      This means that the last element added to the stack will be the first one to be removed.
+                      It resembles a stack of plates where you can only add or remove the top plate.
+            Implementing Stack in C#:
+                      In C#, you can use the Stack<T> class from the System.Collections.Generic namespace to implement a stack. 
+                      The type T represents the type of elements in the stack.
+
+            Basic Operations:
+                      Push: Adds an item to the top of the stack.
+                      Pop: Removes and returns the item at the top of the stack.
+                      Peek: Returns the item at the top of the stack without removing it.
+                      Clear: Removes all items from the stack.
+     */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Stack<int> stack = new Stack<int>();
+
+
+            // Pushing elements onto the stack
+            stack.Push(1);
+            stack.Push(2);
+            stack.Push(3);
+
+
+            // Peeking at the top element
+            Console.WriteLine("Top element: " + stack.Peek());
+
+
+            // Popping elements from the stack
+            Console.WriteLine("Popped: " + stack.Pop());
+            Console.WriteLine("Popped: " + stack.Pop());
+
+
+            // Checking if the stack is empty
+            if (stack.Count == 0)
+            {
+                Console.WriteLine("Stack is empty.");
+            }
+            else
+            {
+                Console.WriteLine("Top element: " + stack.Peek());
+            }
+
+            // Clearing the stack
+            stack.Clear();
+        }
+    }
+}

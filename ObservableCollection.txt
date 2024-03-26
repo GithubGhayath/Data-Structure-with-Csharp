@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace ObservableCollection1
+{
+    /*
+     *                                                          Observable Collection
+     *                           => Observable Collection <T> : A dynameic collection in the system.Collection.ObjectModel
+     *                           => key Feature : Automatically notifise about any changes made to the collection like addition deletion or refreshes
+     *                           => Common use : Widely used in data-binding scenarios , particularly in UI programming
+     *                           => it is a Generic Collection
+    */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //                              Working with ovservable Colletion
+            
+
+            //creating an Observable Collection of string
+            ObservableCollection<string> Names = new ObservableCollection<string>();
+
+            Names.Add("Alice");
+            Names.Add("Bob");
+            Names.Add("James");
+            Names.Add("Jack");
+            Names.Add("Ghayath");
+
+            foreach(string Name in Names) 
+            { 
+                Console.WriteLine(Name);
+            }
+
+
+            //Responding to changes in observableCollection
+            
+            
+            //creating an Observable Collection of string
+            ObservableCollection<string> item = new ObservableCollection<string>();
+
+            //Subscribing to the collectionChanged event:
+            item.CollectionChanged += Item_CollectionChanged;
+
+            //Modifying the Observable Collection
+            item.Add("Item 1");
+            item.Add("Item 2");
+            item.Add("Item 3");
+            item.Add("Item 4");
+            item.Add("Item 5");
+
+            item.Remove("Item 1");
+            item.Insert(0, "Item 1 Updated");
+            item[1] = "Replaced Item";
+            item.Move(0, 2);
+
+            
+
+
+
+            Console.ReadKey();
+
+
+        }
+
+        private static void Item_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+
+            switch(e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    Console.WriteLine("\n\nAdded : ");
+                    foreach(var item in e.NewItems)
+                    {
+                        Console.WriteLine("- " + item);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                    Console.WriteLine("\nRemoved : ");
+                    foreach( var item in e.OldItems)
+                    {
+                        Console.WriteLine("- " + item);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                    Console.WriteLine("\nReplaced : ");
+                    foreach (var item in e.OldItems)
+                    {
+                        Console.WriteLine("- " + item);
+                    }
+                    break;
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                    Console.WriteLine("\nReplaced : ");
+                    Console.WriteLine("\nFrom Index : " + e.OldStartingIndex + " To Index : " + e.NewStartingIndex);
+                    break;
+            }
+           // throw new NotImplementedException();
+        }
+    }
+}

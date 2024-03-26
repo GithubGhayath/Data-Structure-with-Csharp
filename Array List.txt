@@ -1,0 +1,105 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Schema;
+
+namespace ArrayList1
+{
+    /*
+     *                                                          Array List
+     *                               Array List : is a dynamic array that can hold elements of any data type
+     *                               non-Generic
+     *                               ArrayList can grow dynamically as elements are added but does not automatically decrease its capacity when elements are removed
+     *                               Heterogeneous collection
+     *                               
+    */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //               Working with Array List
+
+            ArrayList arr = new ArrayList();
+
+            arr.Add(1);
+            arr.Add("Ghayath");
+            arr.Add('G');
+            arr.Add(215.26m);
+
+
+            Console.WriteLine("Elements in Arraylist : ");
+            foreach ( var ele in arr)
+            {
+                Console.WriteLine(ele);
+            }
+
+            arr.Remove(1);
+            Console.WriteLine("\n\nElements in Arraylist After remove : ");
+            foreach (var ele in arr)
+            {
+                Console.WriteLine(ele);
+            }
+
+
+
+            Console.WriteLine("\n\nElements in Arraylist using for loop : ");
+            for (int i = 0; i < arr.Count; i++)
+            {
+                Console.WriteLine("Element [" + i + "] : " + arr[i]);
+            }
+
+
+            //Filtering ArrayList with LINQ
+            ArrayList Numbes = new ArrayList { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+
+            //We use cast here to convert it to int first then we apply the filter 
+            var evenNumber = Numbes.Cast<int>().Where(n => n % 2 == 0);
+
+            Console.WriteLine("\n\nEven Numbers : ");
+            foreach(var n in evenNumber)
+            {
+                Console.WriteLine(n);
+            }
+
+            //Aggregate functions 
+            ArrayList Numbes2 = new ArrayList { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+
+            var MinValue = Numbes.Cast<int>().Min();
+            var MaxValue = Numbes2.Cast<int>().Max();
+            var SumOfElement = Numbes2.Cast<int>().Sum();
+            var AverageOfElement = Numbes2.Cast<int>().Average();
+            var Count= Numbes2.Cast<int>().Count();
+
+            Console.Write("\n\n\nArray List Elements : ");
+            foreach(var n in Numbes2)
+            {
+                Console.Write(n + " , ");
+            }
+
+            Console.WriteLine("\n\n\nCount : " + Count);
+            Console.WriteLine("Min Number : " + MinValue);
+            Console.WriteLine("Max Number : " + MaxValue);
+            Console.WriteLine("Sum Of Number : " + SumOfElement);
+            Console.WriteLine("AVG : " + AverageOfElement);
+
+            Numbes2.Sort();
+            Console.WriteLine("\nArray List After Sort : ");
+            foreach(var n in Numbes2)
+            {
+                Console.WriteLine(n);
+            }
+
+            //Counting Occurrences of a specific element
+            int targetNumber = 2;
+
+            var count = Numbes2.Cast<int>().Count(n => n == targetNumber);
+
+            Console.WriteLine("\n\nNumber " + targetNumber + " in array : " + count);
+
+            Console.ReadKey();
+        }
+    }
+}

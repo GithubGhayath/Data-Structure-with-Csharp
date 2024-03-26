@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Multiple
+{
+    /*
+            Introduction to Linked List:
+                       A linked list is a linear data structure consisting of a sequence of elements where each element points to the next element in the sequence. 
+                       Unlike arrays, linked lists do not have a fixed size and can dynamically grow or shrink. 
+                       Linked lists come in different variations such as singly linked lists, doubly linked lists, and circular linked lists.
+
+            Implementing Linked List in C#:
+                       In C#, you can create your own linked list implementation or use the LinkedList<T> class from the System.Collections.Generic namespace to implement a linked list.
+
+            Basic Operations:
+                       Insertion: Insert an element into the linked list.
+                       Deletion: Remove an element from the linked list.
+                       Traversal: Iterate through the elements of the linked list.
+                       Search: Find a specific element in the linked list.
+
+     */
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            LinkedList<int> linkedList = new LinkedList<int>();
+
+
+            // Insertion
+            linkedList.AddLast(1);
+            linkedList.AddLast(2);
+            linkedList.AddLast(3);
+
+
+            // Traversal
+            Console.WriteLine("Linked List:");
+            foreach (var item in linkedList)
+            {
+                Console.WriteLine(item);
+            }
+
+
+            // Deletion
+            linkedList.Remove(2);
+
+
+            // Search
+            if (linkedList.Contains(3))
+            {
+                Console.WriteLine("Element 3 found.");
+            }
+            else
+            {
+                Console.WriteLine("Element 3 not found.");
+            }
+            Console.ReadKey();
+        }
+    }
+}
