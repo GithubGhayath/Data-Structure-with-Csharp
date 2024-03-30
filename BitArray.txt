@@ -1,0 +1,167 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+
+
+namespace BitArray1
+{
+    /*
+     *                                                          Bit Array
+     *                                        Part of System.Collection
+     *                                        provides ca convenient way to work with collections of bits
+     *                it is particulary useful when dealing with operations on binary data when you need to optimize memory usage for storing a large number of boolean values.
+    */
+    internal class Program
+    {
+
+        static string BitArrayToString(BitArray bits)
+        {
+            string BitArray = string.Empty;
+            for (int i = 0; i < bits.Length; i++)
+            {
+                BitArray += (bits[i] == true) ? " 1 " : " 0 ";
+            }
+            return BitArray.Trim();
+        }
+        static void Main(string[] args)
+        {
+
+            //Create a binaryArray with 10 bits all initialized to false
+            BitArray arr = new BitArray(10);
+
+            Console.WriteLine("bit1 Content : " + BitArrayToString(arr));
+            Console.WriteLine("Origin Array Elamants : ");
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Console.WriteLine(arr[i]);
+            }
+
+
+            //Create a bitArray from an array of boolean
+            bool[] initialValus = { true, false, true, true, false };
+            BitArray bit2 = new BitArray(initialValus);
+
+            Console.WriteLine("\nbit2 Content : " + BitArrayToString(bit2));
+            Console.WriteLine("\nBit2 content : ");
+            for (int i = 0; i < bit2.Length; i++)
+            {
+                Console.WriteLine(bit2[i]);
+            }
+
+            //create BitArray from a byte array
+            // 2 Digit of Hex code = 8 bit
+            byte[] byteArray = { 0xAA, 0xF4, 0xDF };
+            BitArray bit3 = new BitArray(byteArray);
+            Console.WriteLine("\nbit3 Content : " + BitArrayToString(bit3));
+            for (int i = 0; i < bit3.Length; i++)
+            {
+                Console.WriteLine(bit3[i]);
+            }
+
+            //Basic operations
+            BitArray bit4= new BitArray(8);  // 00000000 = Byte
+
+            bit4.Set(2, true);
+            bit4.Set(3, true);
+            bit4.Set(4, true);
+            bit4[1] = true;
+
+            Console.WriteLine("\nbit3 Content : " + BitArrayToString(bit4));
+            for (int i = 0; i < bit4.Length; i++)
+            {
+                Console.WriteLine(bit4[i]);
+            }
+
+
+            bit4.SetAll(true);
+            Console.WriteLine("\nbit3 Content : " + BitArrayToString(bit4));
+            for (int i = 0; i < bit4.Length; i++)
+            {
+                Console.WriteLine(bit4[i]);
+            }
+
+
+            bit4.SetAll(false);
+            Console.WriteLine("\nbit3 Content : " + BitArrayToString(bit4));
+            for (int i = 0; i < bit4.Length; i++)
+            {
+                Console.WriteLine(bit4[i]);
+            }
+
+
+
+            // Create two BitArrays
+            BitArray bits1 = new BitArray(new bool[] { true, false, true, false });
+            BitArray bits2 = new BitArray(new bool[] { true, true, true, false });
+
+
+            Console.WriteLine("bits1 : " + BitArrayToString(bits1));
+            Console.WriteLine("bits2 : " + BitArrayToString(bits2));
+            Console.WriteLine("BitWise Operators:");
+
+
+            // Bitwise AND operation
+            BitArray resultAnd = new BitArray(bits1);
+            resultAnd.And(bits2);
+
+
+            Console.WriteLine("\nBitwise AND result: ");
+            Console.WriteLine(BitArrayToString(bits1));
+            Console.WriteLine(BitArrayToString(bits2));
+            Console.WriteLine("------------");
+            Console.WriteLine(BitArrayToString(resultAnd));
+
+            // Bitwise Or operation
+
+            BitArray resultOr = new BitArray(bits1);
+            resultOr.Or(bits2);
+
+
+            Console.WriteLine("\nBitwise Or result: ");
+            Console.WriteLine(BitArrayToString(bits1));
+            Console.WriteLine(BitArrayToString(bits2));
+            Console.WriteLine("------------");
+            Console.WriteLine(BitArrayToString(resultOr));
+
+            // Bitwise Not operation
+            BitArray resultNot = new BitArray(bits1);
+            resultNot.Not();
+
+            Console.WriteLine("\nBitwise Not result: ");
+            Console.WriteLine(BitArrayToString(bits1));
+            Console.WriteLine("------------");
+            Console.WriteLine(BitArrayToString(resultNot));
+
+            // Bitwise Xor operation
+            /*
+             Explaining the XOR:
+             XOR Table: returns true of the two bits are diffrent, otherwise returns false.
+
+                | A | B | A XOR B |
+                |---|---|---------|
+                | 0 | 0 |    0    |
+                | 0 | 1 |    1    |
+                | 1 | 0 |    1    |
+                | 1 | 1 |    0    |
+             */
+            BitArray resultXor = new BitArray(bits1);
+            resultXor.Xor(bits2);
+
+
+            Console.WriteLine("\nBitwise Xor result: ");
+            Console.WriteLine(BitArrayToString(bits1));
+            Console.WriteLine(BitArrayToString(bits2));
+            Console.WriteLine("------------");
+            Console.WriteLine(BitArrayToString(resultXor));
+
+
+
+
+
+            Console.ReadKey();
+
+        }
+    }
+}
