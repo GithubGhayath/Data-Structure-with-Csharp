@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace Tuples
+{
+
+    /*
+     *                                                                  Tuples
+     *                               Tuple is a data structure that holds a fixed number of items, can be of a different type    (int,string,float) X
+     *                               Tuples are immutable once created you cannot change the values of their elements
+     *                               They are especially useful for methods that neet to return more than one value
+     *                               Avoid using tuples for public APIs as they are less descriptive custom classes or structs.
+     *                               
+     *                               
+     *                               
+     *                               Basic concepts:
+     *                                  You can use tuples to represent a simple data record, for instance a typle can store a person's ID,Name,age etc...
+     *                                1- Filter and selecting
+     *                                          with LINQ you can filter and select specific elements from a collection of tuples based on conditions
+     *                                          
+    */
+    internal class Program
+    {
+        static (int,string) GetValues()
+        {
+            return (3, "Ghayath Alali");
+        }
+
+        static void Main(string[] args)
+        {
+            // Declare a tuple
+            (int, string, double) person1 = (1, "Ghayath", 12.3);
+
+
+            // Access tuple elements
+            Console.WriteLine("ID : " + person1.Item1);
+            Console.WriteLine("Name : "+person1.Item2);
+            Console.WriteLine("Salary : " + person1.Item3);
+
+            // Using a method thar returns a tuple
+            Console.WriteLine("\n\n\nPerson ID : " + GetValues().Item1);
+            Console.WriteLine("Person Name : " + GetValues().Item2);
+
+            // List of tuples representing ID, Name, and Age
+            List<(int Id, string Name, int Age)> people = new List<(int, string, int)>
+        {
+            (1, "Alice", 30),
+            (2, "Bob", 25),
+            (3, "Charlie", 35),
+            (4, "Diana", 28)
+        };
+
+            // Filter people with age above 30
+            var filteredPeople = people.Where(p => p.Age > 30);
+
+
+            foreach (var person in filteredPeople)
+            {
+                Console.WriteLine($"Name: {person.Name}, Age: {person.Age}");
+            }
+
+
+            // Find average age
+            double averageAge = people.Average(p => p.Age);
+            Console.WriteLine("Average Age: " + averageAge);
+            Console.ReadKey();
+        }
+    }
+}

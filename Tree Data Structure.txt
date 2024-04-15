@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+
+namespace General_Tree
+{
+
+
+
+    /*
+     *                                           Tree Data Structure
+     *            => Trees Are hirerachical data structures widely used in computer scince
+     *            => They consist of nodes connected by edges with one node designated as the root and every other node having a parent-child relationship 
+     *            => Trees find applications in various fields like computer scince, data organization, and more
+     *            => Terminology:
+                       * Node: An element in the tree that stores data and references to its child nodes.
+                       * Root Node: The topmost node of a tree or the node which does not have any parent node is called the root node. {A} is the root node of the tree. A non-empty tree must contain exactly one root node and exactly one path from the root to all other nodes of the tree.
+                       * Parent Node: A node that has child nodes, The node which is a predecessor of a node is called the parent node of that node. {B} is the parent node of {D, E}.
+                       * Child Node: The node which is the immediate successor of a node is called the child node of that node. Examples: {D, E} are the child nodes of {B}.
+                       * Leaf Node or External Node: The nodes which do not have any child nodes are called leaf nodes. {K, L, M, N, O, P, G} are the leaf nodes of the tree.
+                       * Ancestor of a Node: Any predecessor nodes on the path of the root to that node are called Ancestors of that node. {A,B} are the ancestor nodes of the node {E}
+                       * Depth/Level: The distance between a node and the root. The count of edges on the path from the root node to that node. The root node has level 0
+                       * Height: The length of the longest path from a node to a leaf. The height of a tree is the height of its root node.
+                       * Subtree: A tree rooted at a node.
+                       * Descendant: descendants in a tree data structure are all the nodes that can be reached by following paths downward from a specific node, including its children, grandchildren, and further generations down the tree. {E,I,M,N} are the descendants of the node {B}.
+                       * Sibling: Children of the same parent node are called siblings. {D,E} are called siblings.
+                       * Internal node: A node with at least one child is called Internal Node.
+                       * Neighbor of a Node: Parent or child nodes of that node are called neighbors of that node.
+     *                     
+     *                                              General Tree 
+     *                            
+     *            
+     *                     
+     *                             A General Tree Data Structure, often simply called a "tree," is a non-linear hierarchical data structure that consists of nodes connected by edges.
+     *                             a General Tree allows each node to have any number of children. This flexibility makes it suitable for representing more complex hierarchical relationships than what binary trees can accommodate.
+
+                                    The general tree is one of the types of tree data structure.
+                                    In the general tree, a node can have either 0 or maximum n number of nodes. 
+                                    There is no restriction imposed on the degree of the node (the number of nodes that a node can contain).
+                                    The topmost node in a general tree is known as a root node. The children of the parent node are known as subtrees.
+
+                                    => Uses of a General Tree:
+                                            General Trees are used in many applications to represent hierarchical relationships, such as:
+                                                *File Systems: Directories and files in a file system can be represented as a tree, with directories as internal nodes and files as leaves.
+                                                *Organizational Structures: The hierarchical structure of an organization can be represented, showing the relationships between different departments and employees.
+                                                *Abstract Syntax Trees (ASTs): In compilers, ASTs are used to represent the syntactic structure of source code.
+                                                *Decision Trees: Used in decision-making processes and algorithms, including machine learning models for classification and regression.
+                                                *XML/HTML Documents: The nested tag structure of XML and HTML documents can be represented as a tree, known as the Document Object Model (DOM) for web pages.
+    */
+
+
+
+
+
+
+    public class TreeNode<T>
+    {
+        public T Value {  get; set; }
+        public List<TreeNode<T>> Children;
+
+        public TreeNode(T value)
+        {
+            this.Value = value;
+            Children = new List<TreeNode<T>>();
+        }
+
+        public void AddChild(TreeNode<T> child)
+        {
+            Children.Add((child));
+        }
+
+    }
+
+    public class Tree<T>
+    {
+        public TreeNode<T> Root { get; private set; }
+
+        public Tree(T Value)
+        {
+            Root = new TreeNode<T>(Value);
+        }
+    }
+
+
+
+    internal class Program
+    {
+       
+        static void Main(string[] args)
+        {
+            
+            var Comp = new Tree<string>("CEO");
+            var Fin = new TreeNode<string>("CFO");
+            var Market = new TreeNode<string>("CMO");
+            var Tec = new TreeNode<string>("CTO");
+
+            Comp.Root.AddChild(Fin);
+            Comp.Root.AddChild(Market);
+            Comp.Root.AddChild(Tec);
+
+            Fin.AddChild(new TreeNode<string>("Accountent"));
+            Market.AddChild(new TreeNode<string>("Markiting"));
+            Tec.AddChild(new TreeNode<string>("UX"));
+            Tec.AddChild(new TreeNode<string>("UI"));
+            Tec.AddChild(new TreeNode<string>("Software Eng"));
+
+            Print(Comp.Root, " ");
+
+
+            Console.ReadKey();
+        }
+
+        static public void Print<T>(TreeNode<T> Node, string indent = " ")
+        {
+            Console.WriteLine(indent + Convert.ToString(Node.Value));
+
+            foreach(var chiled in Node.Children)
+            {
+                Print(chiled, indent + " ");
+            }
+        }
+    }
+
+}
