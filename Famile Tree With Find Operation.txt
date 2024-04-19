@@ -1,0 +1,158 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OperationOnGeneralTree
+{
+
+    public class Node<T>
+    {
+        public T Value { get; set; }
+        public List<Node<T>> Childern {  get; set; }
+
+        public Node(T value) 
+        {
+            this.Value = value;
+            Childern = new List<Node<T>>();
+        }
+
+
+        //For Root
+        public void AddChild(Node<T> node)
+        {
+            Childern.Add(node);
+        }
+
+
+        public void AddChild(T value)
+        {
+            Childern.Add(new Node<T>(value));
+        }
+
+        public Node<T> Find(T value)
+        {
+            if (EqualityComparer<T>.Default.Equals(this.Value,value))
+                return this;
+
+
+            foreach (var Child in Childern) 
+            {
+                var IsFound = Child.Find(value);
+                if (IsFound != null)
+                    return IsFound;
+            }
+
+            return null;
+        }
+
+    }
+
+    public class Tree<T>
+    {
+        public Node<T> Root { get; private set; }
+
+        public Tree(T value)
+        {
+            Root = new Node<T>(value);
+        }
+
+        public void AddChild(Node<T> value)
+        {
+            Root.AddChild(value);
+        }
+
+        private void _PrintNodes(Node<T> Child,string Space="")
+        {
+            Console.WriteLine(Space + Child.Value.ToString());
+
+            foreach(var child in Child.Childern)
+            {
+                _PrintNodes(child, Space + "  ");
+            }
+        }
+
+        public void PrintTree()
+        {
+            _PrintNodes(Root);
+        }
+
+        public Node<T> Find(T value)
+        {
+           return Root?.Find(value);
+        }
+    }
+
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Tree<string> MainFather = new Tree<string>("Ali");
+
+            Node<string> Father1 = new Node<string>("Ahamd");
+            Node<string> Father2 = new Node<string>("Ead");
+            Node<string> Father3 = new Node<string>("Emad");
+            Node<string> Father4 = new Node<string>("Saher");
+            Node<string> Father5 = new Node<string>("Zead");
+            Node<string> Father6 = new Node<string>("Jehad");
+
+            //Leaf of The Firt Father
+            Father1.AddChild("Ghayath");
+            Father1.AddChild("Shihab");
+            Father1.AddChild("Rama");
+            Father1.AddChild("Moaze");
+            Father1.AddChild("Remase");
+
+
+            //Leaf of The Second Father
+            Father2.AddChild("Ali");
+            Father2.AddChild("Ahmad");
+            Father2.AddChild("Batul");
+
+
+            //Leaf of The Third Father
+            Father3.AddChild("Ayham");
+            Father3.AddChild("Amjed");
+
+
+            //Leaf of The Fourth Father
+            Father4.AddChild("Aysar");
+            Father4.AddChild("Khalel");
+
+            //Leaf of The fifth Father
+            Father5.AddChild("Mohamed");
+            Father5.AddChild("Nada");
+            Father5.AddChild("Osama");
+
+
+            //Leaf of The sexth Father
+            Father6.AddChild("Toufiq");
+            Father6.AddChild("Alaa");
+
+            //Link all perents with the main father
+            MainFather.AddChild(Father1);
+            MainFather.AddChild(Father2);
+            MainFather.AddChild(Father3);
+            MainFather.AddChild(Father4);
+            MainFather.AddChild(Father5);
+            MainFather.AddChild(Father6);
+
+            MainFather.PrintTree();
+
+            Console.WriteLine("\n\nIs Nada There ?");
+            var Found = MainFather.Find("Nada");
+            string Result = (Found != null) ? "Yes," + Found.Value + " is there" : "Not found!";
+            Console.WriteLine(Result);
+
+            Console.WriteLine("\n\nIs Yara There ?");
+            var Found2 = MainFather.Find("Yara");
+            string Result2 = (Found2 != null) ? "Yes," + Found2.Value + " is there" : "Not found!";
+            Console.WriteLine(Result2);
+
+            Console.ReadKey();
+
+        }
+    }
+}
