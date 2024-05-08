@@ -149,8 +149,6 @@ namespace BinaryTreeImplementation
             InOrderTraversal(Root);
             Console.WriteLine();
         }
-
-
         private void InOrderTraversal(BinaryTreeNode<T> node)
         {
 
@@ -163,6 +161,28 @@ namespace BinaryTreeImplementation
                 Console.Write(node.Value + " ");
                 InOrderTraversal(node.Right);
             }
+        }
+
+        public void LevelOrderTraversal_BFS()
+        {
+            if (Root == null) return;
+
+
+            Queue<BinaryTreeNode<T>> Values = new Queue<BinaryTreeNode<T>>();
+            Values.Enqueue(Root);
+
+            while(Values.Count > 0)
+            {
+                var CurrentNode = Values.Dequeue();
+                Console.Write($" {CurrentNode.Value} ");
+
+                if (CurrentNode.Left != null)
+                    Values.Enqueue(CurrentNode.Left);
+                if (CurrentNode.Right != null)
+                    Values.Enqueue(CurrentNode.Right);
+
+            }
+
         }
     }
 
@@ -193,6 +213,9 @@ namespace BinaryTreeImplementation
 
             Console.WriteLine("\nInorder Traversal: Left-Current-Right");
             binaryTree.InOrderTraversal();
+
+            Console.WriteLine("\nLever Order Traversal (BFS): Breadth First Search");
+            binaryTree.LevelOrderTraversal_BFS();
 
             Console.ReadKey();
 
