@@ -1,28 +1,138 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.SqlClient;
+using System.Data;
+using System.Diagnostics;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Important
 {
+    public class StudentDataAccessLayer
+    {
+        static private string ConnectionString = "Server=.;Database=C21_DB1;User id=sa;Password=sa123456";
+
+        static public DataTable GetAllStudent()
+        {
+            DataTable dt = new DataTable();
+
+            // Create a new SqlConnection using the connection string
+            SqlConnection connection = new SqlConnection(ConnectionString);
+
+            // Define the SQL query to retrieve all records from the "Students" table
+            string Query = "SELECT * FROM Students";
+
+            // Create a new SqlCommand with the query and connection
+            SqlCommand command = new SqlCommand(Query, connection);
+
+            try
+            {
+                // Open the database connection
+                connection.Open();
+
+                // Execute the query and retrieve the results
+                SqlDataReader reader = command.ExecuteReader();
+
+                // If there are rows returned, load them into the DataTable
+                if (reader.HasRows)
+                    dt.Load(reader);
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions (e.g., log or display an error message)
+                // Note: In practice, you should handle exceptions more gracefully
+            }
+            finally
+            {
+                // Close the database connection (whether an exception occurred or not)
+                connection.Close();
+            }
+
+            // Return the populated DataTable containing student records
+            return dt;
+        }
+    }
+
+    public class StudentBusinessLayer
+    {
+        public int StudentID { get; set; }
+        public string StudentName { get; set; }
+        public string Subject { get; set; }
+        public int Great { get; set; }
+        public int AGE { get; set; }
+
+        public StudentBusinessLayer(int studentID, string studentName, string subject, int great, int aGE)
+        {
+            // Constructor: Initializes the properties with the provided values
+            this.StudentID = studentID;
+            this.StudentName = studentName;
+            this.Subject = subject;
+            this.Great = great;
+            this.AGE = aGE;
+        }
+    }
+
+
     public class clsPerson
     {
-        public clsPerson(string name,int age)
+        public clsPerson(string name, int age)
         {
             this.Age = age;
             this.Name = name;
         }
 
-       public string Name { get; set; }
-       public int Age { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
 
-        
+
     }
-
 
     internal class Program
     {
+       static public StudentBusinessLayer ConvertRecordToStudentClass(DataRow Record)
+        {
+            /*
+             * This method converts a DataRow (representing a student record) into an instance of the StudentBusinessLayer class.
+                        It takes a DataRow as input.
+                        The method extracts values from the DataRow (using Convert.ToInt32, Convert.ToString, etc.) and constructs a new StudentBusinessLayer object.
+                        Finally, it returns the created StudentBusinessLayer instance.
+             */
+            StudentBusinessLayer Temp = new StudentBusinessLayer(Convert.ToInt32(Record[0]), Convert.ToString(Record[1]), Convert.ToString(Record[2]), Convert.ToInt32(Record[3]), Convert.ToInt32(Record[4]));
+
+            return Temp;
+
+        }
+
+       static public void FillListWithStudentData(List<StudentBusinessLayer> list,DataTable StudentTable)
+        {
+            /*
+                                 * This method populates a list of StudentBusinessLayer objects with data from a DataTable.
+                    It takes two parameters:
+                    list: A list (collection) of StudentBusinessLayer objects.
+                    StudentTable: A DataTable containing student records.
+                    The method iterates through each row in the StudentTable.
+                    For each row, it calls the ConvertRecordToStudentClass method to create a StudentBusinessLayer object and adds it to the list.
+             */
+            foreach (DataRow Row in StudentTable.Rows)
+            {
+                list.Add(ConvertRecordToStudentClass(Row));
+            }
+        }
+
+       static public void PrintStudentInfo(StudentBusinessLayer Student)
+        {
+            /*
+                                     * This method prints information about a single student.
+                        It takes a StudentBusinessLayer object as input.
+                        The method formats and displays the student’s ID, name, subject, grade, and age using Console.WriteLine.
+             */
+            Console.WriteLine($"ID: {Student.StudentID}\tName: {Student.StudentName}\tSubject: {Student.Subject}\t\tGreat: {Student.Great}\tAge: {Student.AGE}");
+        }
+
         static void Main(string[] args)
         {
+
             /*
                 1 => List <T>
                 2 => Part of system.Generic.Collection [Generic-datastructure]
@@ -43,341 +153,435 @@ namespace Important
 
             //                                                  **WORGING WITH LIST IN C# :
 
-            List<int> Numbers = new List<int>();
+            //List<int> Numbers = new List<int>();
 
-            //Add Elements:
-            Numbers.Add(1);
-            Numbers.Add(2);
-            Numbers.Add(3);
-            Numbers.Add(4);
-            Numbers.Add(5);
-            Numbers.Add(6);
-            Numbers.Add(7);
+            ////Add Elements:
+            //Numbers.Add(1);
+            //Numbers.Add(2);
+            //Numbers.Add(3);
+            //Numbers.Add(4);
+            //Numbers.Add(5);
+            //Numbers.Add(6);
+            //Numbers.Add(7);
 
 
-            //Random Access:
-            Console.WriteLine("List Elements : ");
-            Console.Write(Numbers[0] + " ");
-            Console.Write(Numbers[1] + " ");
-            Console.Write(Numbers[2] + " ");
-            Console.Write(Numbers[3] + " ");
-            Console.Write(Numbers[4] + " ");
-            Console.Write(Numbers[5] + " ");
-            Console.Write(Numbers[6]);
+            ////Random Access:
+            //Console.WriteLine("List Elements : ");
+            //Console.Write(Numbers[0] + " ");
+            //Console.Write(Numbers[1] + " ");
+            //Console.Write(Numbers[2] + " ");
+            //Console.Write(Numbers[3] + " ");
+            //Console.Write(Numbers[4] + " ");
+            //Console.Write(Numbers[5] + " ");
+            //Console.Write(Numbers[6]);
 
-            Console.WriteLine("\n\nChanging the value of item 2 of list to 500");
-            Numbers[1] = 500;
-            Console.Write("\nAfter Change : " + Numbers[1]);
+            //Console.WriteLine("\n\nChanging the value of item 2 of list to 500");
+            //Numbers[1] = 500;
+            //Console.Write("\nAfter Change : " + Numbers[1]);
 
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
-     
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
 
 
-            //Insert to list :
-            List<int> Numbers1 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
+            ////Insert to list :
+            //List<int> Numbers1 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-            //Insert element at a specific position
-            Numbers1.Insert(0, 0);
-            Console.WriteLine("\n\nElements After Insert 0 At index 0 : " + string.Join(" , ", Numbers1));
 
+            ////Insert element at a specific position
+            //Numbers1.Insert(0, 0);
+            //Console.WriteLine("\n\nElements After Insert 0 At index 0 : " + string.Join(" , ", Numbers1));
 
-            //Insert Multiple elements
-            Numbers1.InsertRange(0, new List<int> { -4, -3, -2, -1 });
-            Console.WriteLine("\n\nElements After Insert Range { -4, -3, -2, -1 } at 0 index : " + string.Join(" , ", Numbers1));
 
+            ////Insert Multiple elements
+            //Numbers1.InsertRange(0, new List<int> { -4, -3, -2, -1 });
+            //Console.WriteLine("\n\nElements After Insert Range { -4, -3, -2, -1 } at 0 index : " + string.Join(" , ", Numbers1));
 
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
 
-            List<string> Names = new List<string> { "Ghayath", "John", "Ali", "Maya", "Ola", "Sara", "Yara", "Zeen", "Zead", "Qusi" };
 
-            //Remove Item: 
+            //List<string> Names = new List<string> { "Ghayath", "John", "Ali", "Maya", "Ola", "Sara", "Yara", "Zeen", "Zead", "Qusi" };
 
-            //Removing an item by value
-            Names.Remove("Ghayath");
-            Console.WriteLine("\n\nList After Remove 'Ghayath' : " + string.Join(" , ", Names));
+            ////Remove Item: 
 
-            //Removing an item by Index
-            Names.RemoveAt(1);
-            Console.WriteLine("\n\nList After Remove Item in pos:1  : " + string.Join(" , ", Names));
+            ////Removing an item by value
+            //Names.Remove("Ghayath");
+            //Console.WriteLine("\n\nList After Remove 'Ghayath' : " + string.Join(" , ", Names));
 
+            ////Removing an item by Index
+            //Names.RemoveAt(1);
+            //Console.WriteLine("\n\nList After Remove Item in pos:1  : " + string.Join(" , ", Names));
 
-            //Removing multiple items
-            Names.RemoveAll(name => name.Length > 3);
-            Console.WriteLine("\n\nList After Remove Items > 3 letters  : " + string.Join(" , ", Names));
 
+            ////Removing multiple items
+            //Names.RemoveAll(name => name.Length > 3);
+            //Console.WriteLine("\n\nList After Remove Items > 3 letters  : " + string.Join(" , ", Names));
 
-            //Clearing the list 
-            Names.Clear();
 
+            ////Clearing the list 
+            //Names.Clear();
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            //Looping Through a list :
-            List<int> Numbers2 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
-            Console.WriteLine("\n\n\nElements With normal loop : ");
-            for (int i = 0; i < Numbers2.Count; i++)
-            {
-                Console.Write(Numbers2[i] + " ");
-            }
+            ////Looping Through a list :
+            //List<int> Numbers2 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
-            Console.WriteLine("\n\n\nElements With Foreach loop : ");
-            foreach(int Num in Numbers2)
-            {
-                Console.Write(Num + " ");
-            }
+            //Console.WriteLine("\n\n\nElements With normal loop : ");
+            //for (int i = 0; i < Numbers2.Count; i++)
+            //{
+            //    Console.Write(Numbers2[i] + " ");
+            //}
 
-            Console.WriteLine("\n\nElement With List.Foreach :");
-            Numbers2.ForEach(N => Console.Write(N + " "));
+            //Console.WriteLine("\n\n\nElements With Foreach loop : ");
+            //foreach (int Num in Numbers2)
+            //{
+            //    Console.Write(Num + " ");
+            //}
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
+            //Console.WriteLine("\n\nElement With List.Foreach :");
+            //Numbers2.ForEach(N => Console.Write(N + " "));
 
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
 
-            //Aggregating Data Using LINQ with list
-            List<int> Numbers4 = new List<int> { 1, 2, 3, 4, 5, 6 };
 
+            ////Aggregating Data Using LINQ with list
+            //List<int> Numbers4 = new List<int> { 1, 2, 3, 4, 5, 6 };
 
-            Console.WriteLine("\n\n\n\nList Elements :");
-            Numbers4.ForEach(Num => Console.Write(Num + " "));
 
-            //Aggregation operations:
-            Console.WriteLine("\n\nThe Sum Of Elements using LINQ => sum() : " + Numbers4.Sum());
-            Console.WriteLine("\nThe Average Of Elements using LINQ => Average() : " + Numbers4.Average());
-            Console.WriteLine("\nThe Max Number In List LINQ => Max() : " + Numbers4.Max());
-            Console.WriteLine("\nThe Min Number In List LINQ => Min() : " + Numbers4.Min());
-            Console.WriteLine("\nThe Count Elements In List LINQ => Count() : " + Numbers4.Count());
+            //Console.WriteLine("\n\n\n\nList Elements :");
+            //Numbers4.ForEach(Num => Console.Write(Num + " "));
 
+            ////Aggregation operations:
+            //Console.WriteLine("\n\nThe Sum Of Elements using LINQ => sum() : " + Numbers4.Sum());
+            //Console.WriteLine("\nThe Average Of Elements using LINQ => Average() : " + Numbers4.Average());
+            //Console.WriteLine("\nThe Max Number In List LINQ => Max() : " + Numbers4.Max());
+            //Console.WriteLine("\nThe Min Number In List LINQ => Min() : " + Numbers4.Min());
+            //Console.WriteLine("\nThe Count Elements In List LINQ => Count() : " + Numbers4.Count());
 
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
-            //Filtering Data with LINQ C# using list
-            List<int> Numbers5 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            Console.WriteLine("\n\n\n\nList Elements :");
-            Numbers5.ForEach(Num => Console.Write(Num + " "));
+            ////Filtering Data with LINQ C# using list
+            //List<int> Numbers5 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
+            //Console.WriteLine("\n\n\n\nList Elements :");
+            //Numbers5.ForEach(Num => Console.Write(Num + " "));
 
-            //LINQ Filtering
-            Console.WriteLine("\n\nEven Numbers : " + string.Join(" , ", Numbers5.Where(n => n % 2 == 0)));
-            Console.WriteLine("\nOdd Numbers : " + string.Join(" , " , Numbers5.Where(n => n % 2 != 0)));
-            Console.WriteLine("\nNumbers Greater then 5 : " + string.Join(" , ", Numbers5.Where(n => n > 5)));
-            Console.WriteLine("\nEvery Second Number : " + string.Join(" , ", Numbers5.Where((n, index) => index % 2 == 1)));
-            Console.WriteLine("\nNumbers between 3 and 8 : " + string.Join(" , ", Numbers5.Where(n => n > 3 && n < 8)));
 
+            ////LINQ Filtering
+            //Console.WriteLine("\n\nEven Numbers : " + string.Join(" , ", Numbers5.Where(n => n % 2 == 0)));
+            //Console.WriteLine("\nOdd Numbers : " + string.Join(" , ", Numbers5.Where(n => n % 2 != 0)));
+            //Console.WriteLine("\nNumbers Greater then 5 : " + string.Join(" , ", Numbers5.Where(n => n > 5)));
+            //Console.WriteLine("\nEvery Second Number : " + string.Join(" , ", Numbers5.Where((n, index) => index % 2 == 1)));
+            //Console.WriteLine("\nNumbers between 3 and 8 : " + string.Join(" , ", Numbers5.Where(n => n > 3 && n < 8)));
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
-            //Sorting a list in c# using various methods
-            List<int> Numbers6 = new List<int> { 5, 1, 7, 2, 3, 4, 10, 6, 8, 9 };
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            Console.WriteLine("\n\n\n\nList Elements :");
-            Numbers6.ForEach(Num => Console.Write(Num + " "));
+            ////Sorting a list in c# using various methods
+            //List<int> Numbers6 = new List<int> { 5, 1, 7, 2, 3, 4, 10, 6, 8, 9 };
 
+            //Console.WriteLine("\n\n\n\nList Elements :");
+            //Numbers6.ForEach(Num => Console.Write(Num + " "));
 
 
-            //Default sorting Ascending
-            Numbers6.Sort();
-            Console.WriteLine("\n\nThe Elements After Sorting Ascending : " + string.Join(" , ", Numbers6));
 
-            //Sorting in Descending order 
-            Numbers6.Reverse();
-            Console.WriteLine("The Elements After Sorting Descending : " + string.Join(" , ", Numbers6));
+            ////Default sorting Ascending
+            //Numbers6.Sort();
+            //Console.WriteLine("\n\nThe Elements After Sorting Ascending : " + string.Join(" , ", Numbers6));
 
-            //Sorting with LINQ
-            Console.WriteLine("\n\nThe Elements After Sorting Ascending with LINQ : " + string.Join(" , ", Numbers6.OrderBy(n => n)));
-            Console.WriteLine("The Elements After Sorting Descending with LINQ : " + string.Join(" , ", Numbers6.OrderByDescending(n => n)));
+            ////Sorting in Descending order 
+            //Numbers6.Reverse();
+            //Console.WriteLine("The Elements After Sorting Descending : " + string.Join(" , ", Numbers6));
 
+            ////Sorting with LINQ
+            //Console.WriteLine("\n\nThe Elements After Sorting Ascending with LINQ : " + string.Join(" , ", Numbers6.OrderBy(n => n)));
+            //Console.WriteLine("The Elements After Sorting Descending with LINQ : " + string.Join(" , ", Numbers6.OrderByDescending(n => n)));
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
-            // (Contains , Exists , Find , FindAll , Any ) With List:
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            List<int> Numbers7 = new List<int> { 44, 22, -55, 9, 666, -6, 425, 11, 5, 2 };
+            //// (Contains , Exists , Find , FindAll , Any ) With List:
 
+            //List<int> Numbers7 = new List<int> { 44, 22, -55, 9, 666, -6, 425, 11, 5, 2 };
 
-            Console.WriteLine("\n\n\n\nList Elements :");
-            Numbers7.ForEach(Num => Console.Write(Num + " "));
 
+            //Console.WriteLine("\n\n\n\nList Elements :");
+            //Numbers7.ForEach(Num => Console.Write(Num + " "));
 
 
 
-            Console.WriteLine("\n\nList Contains 9 : " + Numbers7.Contains(9));
-            Console.WriteLine("List Exists negative number : " + Numbers7.Exists(n => n < 0));
-            Console.WriteLine("First Negative number in list : " + Numbers7.Find(n => n < 0));
-            Console.WriteLine("All Negative number in list : " + string.Join(" , ", Numbers7.FindAll(n => n < 0)));
-            Console.WriteLine("Any number greater then 100 : " + Numbers7.Any(n => n > 100));
 
+            //Console.WriteLine("\n\nList Contains 9 : " + Numbers7.Contains(9));
+            //Console.WriteLine("List Exists negative number : " + Numbers7.Exists(n => n < 0));
+            //Console.WriteLine("First Negative number in list : " + Numbers7.Find(n => n < 0));
+            //Console.WriteLine("All Negative number in list : " + string.Join(" , ", Numbers7.FindAll(n => n < 0)));
+            //Console.WriteLine("Any number greater then 100 : " + Numbers7.Any(n => n > 100));
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
 
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            List<string> Names1 = new List<string> { "Ghayath", "John", "Ali", "Maya", "Ola", "Sara", "Yara", "Zeen", "Zead", "Qusi" };
-           
-            
-            Console.WriteLine("\n\n\n\nList Elements :");
-            Names1.ForEach(Num => Console.Write(Num + " - "));
 
+            //List<string> Names1 = new List<string> { "Ghayath", "John", "Ali", "Maya", "Ola", "Sara", "Yara", "Zeen", "Zead", "Qusi" };
 
-            Console.WriteLine("\n\nList Contains 'Ghayath' : " + Names1.Contains("Ghayath"));
-            Console.WriteLine("List Exists length > 3 : " + Names1.Exists(n => n.Length > 3));
-            Console.WriteLine("First Name length > 4 in list : " + Names1.Find(n => n.Length > 4)) ;
-            Console.WriteLine("All Names length > 3 in list : " + string.Join(" , ", Names1.FindAll(n => n.Length > 3)));
-            Console.WriteLine("Any Name Start with 'S' : " + Names1.Any(n => n.StartsWith("S")));
-            Console.WriteLine("Any Name Start with 'I' : " + Names1.Any(n => n.StartsWith("I")));
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
+            //Console.WriteLine("\n\n\n\nList Elements :");
+            //Names1.ForEach(Num => Console.Write(Num + " - "));
 
-            //List<CustomObjects>
 
+            //Console.WriteLine("\n\nList Contains 'Ghayath' : " + Names1.Contains("Ghayath"));
+            //Console.WriteLine("List Exists length > 3 : " + Names1.Exists(n => n.Length > 3));
+            //Console.WriteLine("First Name length > 4 in list : " + Names1.Find(n => n.Length > 4));
+            //Console.WriteLine("All Names length > 3 in list : " + string.Join(" , ", Names1.FindAll(n => n.Length > 3)));
+            //Console.WriteLine("Any Name Start with 'S' : " + Names1.Any(n => n.StartsWith("S")));
+            //Console.WriteLine("Any Name Start with 'I' : " + Names1.Any(n => n.StartsWith("I")));
 
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
 
-            List<clsPerson> people = new List<clsPerson>
-            {
-                new clsPerson("Ali",20),
-                new clsPerson("Maher",10),
-                new clsPerson("Ola",24),
-                new clsPerson("Maya",15),
-                new clsPerson("Yara",12),
-                new clsPerson("Majd",24),
-                new clsPerson("John",25),
-                new clsPerson("Amal",11),
-                new clsPerson("Angel",12),
-                new clsPerson("Ghayath",20)
-            };
+            ////List<CustomObjects>
 
 
-            //Iterating over the list and prainting details of each person
-            Console.WriteLine("\n\n\n\n--------------------------- Current state of the people list :");
-            foreach (clsPerson Person in people)
-            {
-                Console.WriteLine($"Name :   {Person.Name}  \t\t\tAge : {Person.Age}");
-            }
 
+            //List<clsPerson> people = new List<clsPerson>
+            //{
+            //    new clsPerson("Ali",20),
+            //    new clsPerson("Maher",10),
+            //    new clsPerson("Ola",24),
+            //    new clsPerson("Maya",15),
+            //    new clsPerson("Yara",12),
+            //    new clsPerson("Majd",24),
+            //    new clsPerson("John",25),
+            //    new clsPerson("Amal",11),
+            //    new clsPerson("Angel",12),
+            //    new clsPerson("Ghayath",20)
+            //};
 
-            //Using Find
-            Console.WriteLine("\n\n---------------------------Perosn you looking for is : ");
-            clsPerson PersonInfo = people.Find(p => p.Name == "Ali");
-            if(PersonInfo !=null)
-            {
-                Console.WriteLine($"Name :   {PersonInfo.Name}  \tAge : {PersonInfo.Age}");
-            }
 
+            ////Iterating over the list and prainting details of each person
+            //Console.WriteLine("\n\n\n\n--------------------------- Current state of the people list :");
+            //foreach (clsPerson Person in people)
+            //{
+            //    Console.WriteLine($"Name :   {Person.Name}  \t\t\tAge : {Person.Age}");
+            //}
 
-            //Finding and updating the age of a person named 'Yara'
-            Console.WriteLine("\n\n\n---------------------------Update Yara's Age : ");
-            clsPerson Yara = people.FirstOrDefault(p => p.Name == "Yara");
-            if(Yara!=null) 
-            {
-                Yara.Age = 22;
-                Console.WriteLine($"Name :   {Yara.Name}  \tAge : {Yara.Age}");
 
-            }
+            ////Using Find
+            //Console.WriteLine("\n\n---------------------------Perosn you looking for is : ");
+            //clsPerson PersonInfo = people.Find(p => p.Name == "Ali");
+            //if (PersonInfo != null)
+            //{
+            //    Console.WriteLine($"Name :   {PersonInfo.Name}  \tAge : {PersonInfo.Age}");
+            //}
+
+
+            ////Finding and updating the age of a person named 'Yara'
+            //Console.WriteLine("\n\n\n---------------------------Update Yara's Age : ");
+            //clsPerson Yara = people.FirstOrDefault(p => p.Name == "Yara");
+            //if (Yara != null)
+            //{
+            //    Yara.Age = 22;
+            //    Console.WriteLine($"Name :   {Yara.Name}  \tAge : {Yara.Age}");
+
+            //}
+
+            ///*
+            // * Find ====> method in list
+            // * FirstOrDefault =====> method in LINQ
+            // */
+
+            //var Persons = people.FindAll(p => p.Age >= 20);
+            //Console.WriteLine("\n\n\n---------------------------All Persons their Ages > 20 year : ");
+            //foreach (var Person in Persons)
+            //{
+            //    Console.WriteLine($"Name :   {Person.Name}  \tAge : {Person.Age}");
+            //}
+
+
+            ////Using Any to check by name
+            //bool Isfound = people.Any(p => p.Name == "Ghayath");
+            //Console.WriteLine("\n\n\n---------------------------The Person Name 'Ghayath' = " + Isfound.ToString());
+
+            ////Using Exists
+            //bool IsExists = people.Exists(p => p.Age > 40);
+            //Console.WriteLine("\n\n\n---------------------------The Person Age > 40  = " + IsExists.ToString());
+
+            ////Using Remove All
+            //people.RemoveAll(p => p.Age <= 15);
+            //Console.WriteLine("---------------------------List After remove all people thier age <=15 :");
+            //foreach (clsPerson Person in people)
+            //{
+            //    Console.WriteLine($"Name :   {Person.Name}  \tAge : {Person.Age}");
+            //}
+
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
+
+            ////Converting a List to an Array
+
+            //List<int> list = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
+            //int[] Array = list.ToArray();
+
+            //Console.WriteLine("\n\n\n\nList After Convert to Array : " + string.Join(" , ", Array));
+
+
+            ////-----------------------------------------------------------------------------------------------------------
+            ////***********************************************************************************************************
+            ////-----------------------------------------------------------------------------------------------------------
+
+            ////Converting an Array to a List
+
+            //int[] Array1 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            //List<int> list1 = new List<int>(Array1);
+
+            //Console.WriteLine("\n\n\n\nArray After Convert to List : " + string.Join(" , ", list1));
+
+
+
+
+
+            ///*
+            //                                                  Exists VS Any:   
+
+            //            In C# both Exists and Any are methods used for collection manipulation typically with list or arrays
+            //            The Deffrence Between Them :
+
+            //            -Exists:
+            //                        *Provided by the list
+            //                        *Return Boolean type
+            //            -Any:
+            //                        *Any is a LINQ extension method available for any collection implementing the IEnumerable<T>
+            //                        *Return Boolean type
+
+
+
+            //==> Both Methods serve similar purposes ,but Exists is more specialized for lists 
+            //while Any is more versatile and can be used with any enumerable collectioin   
+
+            // */
+
+
+
+
+
+            //This line initializes an empty list called Students.
+
+            List<StudentBusinessLayer> Students = new List<StudentBusinessLayer>();
+
+
+            //This line calls the FillListWithStudentData method, passing in the Students list and the result of StudentDataAccessLayer.GetAllStudent().
+            // The GetAllStudent() method retrieves student data(presumably from a database) and returns a DataTable.
+            //The FillListWithStudentData method converts each row from the DataTable into a StudentBusinessLayer object and adds it to the Students list.
+            FillListWithStudentData(Students, StudentDataAccessLayer.GetAllStudent());
+
+
+
+            //This line uses the ForEach method to iterate through each student in the Students list.
+            //For each student(Stu), it calls the PrintStudentInfo method to display information about that student(ID, name, subject, grade, and age).
+            Students.ForEach(Stu => PrintStudentInfo(Stu));
+
+            //The Subject In Class
 
             /*
-             * Find ====> method in list
-             * FirstOrDefault =====> method in LINQ
-             */
+            --ArtHistory
+            --Biology
+            --Chemistry
+            --ComputerScience
+            --Geography
+            --History
+            --Literature
+            --Mathematics
+            --Physics
+            */
 
-            var Persons = people.FindAll(p => p.Age >= 20);
-            Console.WriteLine("\n\n\n---------------------------All Persons their Ages > 20 year : ");
-            foreach(var Person in Persons)
-            {
-                Console.WriteLine($"Name :   {Person.Name}  \tAge : {Person.Age}");
-            }
-
-
-            //Using Any to check by name
-            bool Isfound = people.Any(p => p.Name == "Ghayath");
-            Console.WriteLine("\n\n\n---------------------------The Person Name 'Ghayath' = " + Isfound.ToString());
-
-            //Using Exists
-            bool IsExists = people.Exists(p => p.Age > 40);
-            Console.WriteLine("\n\n\n---------------------------The Person Age > 40  = " + IsExists.ToString());
-
-            //Using Remove All
-            people.RemoveAll(p => p.Age <= 15);
-            Console.WriteLine("---------------------------List After remove all people thier age <=15 :");
-            foreach (clsPerson Person in people)
-            {
-                Console.WriteLine($"Name :   {Person.Name}  \tAge : {Person.Age}");
-            }
-
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
-
-            //Converting a List to an Array
-
-            List<int> list = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
-            int[] Array = list.ToArray();
-
-            Console.WriteLine("\n\n\n\nList After Convert to Array : " + string.Join(" , ", Array));
+            //This line filters the Students list to create a new list called StudentsArtHistory.
+            //It includes only those students whose Subject property is equal to "Art History".
+            var StudentsArtHistory = Students.Where(student => student.Subject == "Art History").ToList();
 
 
-            //-----------------------------------------------------------------------------------------------------------
-            //***********************************************************************************************************
-            //-----------------------------------------------------------------------------------------------------------
+            //Similar to the previous line, this one creates a new list called StudentsBiology.
+            //It contains students whose Subject property matches "Biology".
+            var StudentsBiology = Students.Where(student => student.Subject == "Biology").ToList();
 
-            //Converting an Array to a List
-
-            int[] Array1 = { 1, 2, 3, 4, 5, 6, 7, 8 };
-            List<int> list1 = new List<int>(Array1);
-
-            Console.WriteLine("\n\n\n\nArray After Convert to List : " + string.Join(" , ", list1));
+            //Again, this line creates a list called StudentsChemistry.
+            //It includes students with the Subject property set to "Chemistry"
+            var StudentsChemistry = Students.Where(student => student.Subject == "Chemistry").ToList();
 
 
 
+            // Art History Students
+            Console.WriteLine($"\n\n\nAll Students those Study Art History.\nCount: {StudentsArtHistory.Count}\n");
+            StudentsArtHistory.ForEach(Stu => PrintStudentInfo(Stu));
 
+            // Biology Students
+            Console.WriteLine($"\n\n\nAll Students those Study Biology.\nCount: {StudentsBiology.Count}\n");
+            StudentsBiology.ForEach(Stu => PrintStudentInfo(Stu));
 
-            /*
-                                                              Exists VS Any:   
-                             
-                        In C# both Exists and Any are methods used for collection manipulation typically with list or arrays
-                        The Deffrence Between Them :
-
-                        -Exists:
-                                    *Provided by the list
-                                    *Return Boolean type
-                        -Any:
-                                    *Any is a LINQ extension method available for any collection implementing the IEnumerable<T>
-                                    *Return Boolean type
+            // Chemistry Students
+            Console.WriteLine($"\n\n\nAll Students those Study Chemistry.\nCount: {StudentsChemistry.Count} \n");
+            StudentsChemistry.ForEach(Stu => PrintStudentInfo(Stu));
 
 
 
-            ==> Both Methods serve similar purposes ,but Exists is more specialized for lists 
-            while Any is more versatile and can be used with any enumerable collectioin   
+            // Calculate the number of students who passed the Art History test
+            int NumberOfStudentPassedTheTestArtHistory = StudentsArtHistory.Count(num => num.Great >= 60);
+            // Calculate the number of students In Art History test
+            int TotalStudentInArtHistory = StudentsArtHistory.Count();
+            Console.WriteLine("\n\nStudent Passed The Art History Test: " + NumberOfStudentPassedTheTestArtHistory);
+            Console.WriteLine("Total Students in Art History: " + TotalStudentInArtHistory);
+            // pass percentage for each subject
+            Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
 
-             */
 
 
+            // Calculate the number of students who passed the Biology test
+            NumberOfStudentPassedTheTestArtHistory = StudentsBiology.Count(num => num.Great >= 60);
+            // Calculate the number of students In Biology test
+            TotalStudentInArtHistory = StudentsBiology.Count();
+            Console.WriteLine("\n\nStudent Passed The Biology Test: " + NumberOfStudentPassedTheTestArtHistory);
+            Console.WriteLine("Total Students in Biology: " + TotalStudentInArtHistory);
+            // pass percentage for each subject
+            Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
 
+
+            // Clear the list of Chemistry students
+            StudentsChemistry.Clear();
+
+            // Clear the list of Biology students
+            StudentsBiology.Clear();
+
+            // Clear the list of Art History students
+            StudentsArtHistory.Clear();
+
+
+            //For Free Memory
+            Students.Clear();
 
 
 
