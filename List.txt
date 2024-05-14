@@ -496,7 +496,7 @@ namespace Important
 
 
             //This line calls the FillListWithStudentData method, passing in the Students list and the result of StudentDataAccessLayer.GetAllStudent().
-            // The GetAllStudent() method retrieves student data(presumably from a database) and returns a DataTable.
+             //The GetAllStudent() method retrieves student data(presumably from a database) and returns a DataTable.
             //The FillListWithStudentData method converts each row from the DataTable into a StudentBusinessLayer object and adds it to the Students list.
             FillListWithStudentData(Students, StudentDataAccessLayer.GetAllStudent());
 
@@ -504,7 +504,7 @@ namespace Important
 
             //This line uses the ForEach method to iterate through each student in the Students list.
             //For each student(Stu), it calls the PrintStudentInfo method to display information about that student(ID, name, subject, grade, and age).
-            Students.ForEach(Stu => PrintStudentInfo(Stu));
+            //Students.ForEach(Stu => PrintStudentInfo(Stu));
 
             //The Subject In Class
 
@@ -522,62 +522,114 @@ namespace Important
 
             //This line filters the Students list to create a new list called StudentsArtHistory.
             //It includes only those students whose Subject property is equal to "Art History".
-            var StudentsArtHistory = Students.Where(student => student.Subject == "Art History").ToList();
+            // var StudentsArtHistory = Students.Where(student => student.Subject == "Art History").ToList();
 
 
             //Similar to the previous line, this one creates a new list called StudentsBiology.
             //It contains students whose Subject property matches "Biology".
-            var StudentsBiology = Students.Where(student => student.Subject == "Biology").ToList();
+            //  var StudentsBiology = Students.Where(student => student.Subject == "Biology").ToList();
 
             //Again, this line creates a list called StudentsChemistry.
             //It includes students with the Subject property set to "Chemistry"
-            var StudentsChemistry = Students.Where(student => student.Subject == "Chemistry").ToList();
+            //   var StudentsChemistry = Students.Where(student => student.Subject == "Chemistry").ToList();
 
 
 
             // Art History Students
-            Console.WriteLine($"\n\n\nAll Students those Study Art History.\nCount: {StudentsArtHistory.Count}\n");
-            StudentsArtHistory.ForEach(Stu => PrintStudentInfo(Stu));
+            //Console.WriteLine($"\n\n\nAll Students those Study Art History.\nCount: {StudentsArtHistory.Count}\n");
+            //StudentsArtHistory.ForEach(Stu => PrintStudentInfo(Stu));
 
-            // Biology Students
-            Console.WriteLine($"\n\n\nAll Students those Study Biology.\nCount: {StudentsBiology.Count}\n");
-            StudentsBiology.ForEach(Stu => PrintStudentInfo(Stu));
+            //// Biology Students
+            //Console.WriteLine($"\n\n\nAll Students those Study Biology.\nCount: {StudentsBiology.Count}\n");
+            //StudentsBiology.ForEach(Stu => PrintStudentInfo(Stu));
 
-            // Chemistry Students
-            Console.WriteLine($"\n\n\nAll Students those Study Chemistry.\nCount: {StudentsChemistry.Count} \n");
-            StudentsChemistry.ForEach(Stu => PrintStudentInfo(Stu));
-
-
-
-            // Calculate the number of students who passed the Art History test
-            int NumberOfStudentPassedTheTestArtHistory = StudentsArtHistory.Count(num => num.Great >= 60);
-            // Calculate the number of students In Art History test
-            int TotalStudentInArtHistory = StudentsArtHistory.Count();
-            Console.WriteLine("\n\nStudent Passed The Art History Test: " + NumberOfStudentPassedTheTestArtHistory);
-            Console.WriteLine("Total Students in Art History: " + TotalStudentInArtHistory);
-            // pass percentage for each subject
-            Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
+            //// Chemistry Students
+            //Console.WriteLine($"\n\n\nAll Students those Study Chemistry.\nCount: {StudentsChemistry.Count} \n");
+            //StudentsChemistry.ForEach(Stu => PrintStudentInfo(Stu));
 
 
 
-            // Calculate the number of students who passed the Biology test
-            NumberOfStudentPassedTheTestArtHistory = StudentsBiology.Count(num => num.Great >= 60);
-            // Calculate the number of students In Biology test
-            TotalStudentInArtHistory = StudentsBiology.Count();
-            Console.WriteLine("\n\nStudent Passed The Biology Test: " + NumberOfStudentPassedTheTestArtHistory);
-            Console.WriteLine("Total Students in Biology: " + TotalStudentInArtHistory);
-            // pass percentage for each subject
-            Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
+            //// Calculate the number of students who passed the Art History test
+            //int NumberOfStudentPassedTheTestArtHistory = StudentsArtHistory.Count(num => num.Great >= 60);
+            //// Calculate the number of students In Art History test
+            //int TotalStudentInArtHistory = StudentsArtHistory.Count();
+            //Console.WriteLine("\n\nStudent Passed The Art History Test: " + NumberOfStudentPassedTheTestArtHistory);
+            //Console.WriteLine("Total Students in Art History: " + TotalStudentInArtHistory);
+            //// pass percentage for each subject
+            //Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
 
 
-            // Clear the list of Chemistry students
-            StudentsChemistry.Clear();
 
-            // Clear the list of Biology students
-            StudentsBiology.Clear();
+            //// Calculate the number of students who passed the Biology test
+            //NumberOfStudentPassedTheTestArtHistory = StudentsBiology.Count(num => num.Great >= 60);
+            //// Calculate the number of students In Biology test
+            //TotalStudentInArtHistory = StudentsBiology.Count();
+            //Console.WriteLine("\n\nStudent Passed The Biology Test: " + NumberOfStudentPassedTheTestArtHistory);
+            //Console.WriteLine("Total Students in Biology: " + TotalStudentInArtHistory);
+            //// pass percentage for each subject
+            //Console.WriteLine("Pass Percentage: " + (((double)NumberOfStudentPassedTheTestArtHistory / (double)TotalStudentInArtHistory) * 100).ToString());
 
-            // Clear the list of Art History students
-            StudentsArtHistory.Clear();
+
+            //// Clear the list of Chemistry students
+            //StudentsChemistry.Clear();
+
+            //// Clear the list of Biology students
+            //StudentsBiology.Clear();
+
+            //// Clear the list of Art History students
+            //StudentsArtHistory.Clear();
+
+
+
+
+            // Console.WriteLine("Students Ordered By StudentID Descending:");
+            //var StudentOrderedByStudentIDDesce = Students.OrderByDescending(stu => stu.StudentID).ToList();
+
+            // // Assuming you have a PrintStudentInfo method to display student information
+            // StudentOrderedByStudentIDDesce.ForEach(stu => PrintStudentInfo(stu));
+
+            // //On Other Way
+            // Students.Reverse();
+            // Students.ForEach(stu => PrintStudentInfo(stu));
+
+
+
+            Console.WriteLine("\n\nThe Students Passed The History exam:\n");
+            // Filter students who have a grade greater than or equal to 60 and whose subject is "History"
+            List<StudentBusinessLayer> StudentsPassedHistoryTest = Students.FindAll(stu => (stu.Great >= 60 && stu.Subject == "History"));
+            // Sort the filtered students in descending order based on their grade
+            var OrderByGreat = StudentsPassedHistoryTest.OrderByDescending(G => G.Great).ToList();
+            // Print information about each student
+            OrderByGreat.ForEach(stu => PrintStudentInfo(stu));
+
+
+            /*
+             * We use LINQ to check if there is any student with a grade of 100 (Great == 100) in the filtered list of students who passed the History exam.
+             * If such a student exists, the variable IsAnyStudentGetsTheCompleteGreat is set to "Yes", otherwise it is set to "No".
+             * Finally, we print whether there is any student who achieved a perfect grade in History.
+             */
+            string IsAnyStudentGetsTheCompleteGreat = (OrderByGreat.Any(stu => stu.Great == 100)) ? "Yes" : "No";
+            Console.WriteLine("\n\nIs There Any Student Get The complete Great in History? " + IsAnyStudentGetsTheCompleteGreat);
+
+
+
+            //How we can make bad Algorithm :) Follow me....
+            StudentBusinessLayer[] aStudents = Students.ToArray();
+
+
+            Console.WriteLine("\n\n\nStudents From Array :\nThe Big o of this O(n) That means it is bad then List<> \n");
+            for (int i = 0; i < aStudents.Length; i++)
+            {
+                PrintStudentInfo(aStudents[i]);
+            }
+
+            //No no Let's RollBake By Difined a new list with new name
+            List<StudentBusinessLayer> ThisListFromArray = new List<StudentBusinessLayer>(aStudents);
+
+
+            Console.WriteLine("\n\n\nThe Stuents from New LIst :\n");
+            ThisListFromArray.ForEach(s=>PrintStudentInfo(s));
+
 
 
             //For Free Memory
