@@ -1,12 +1,188 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Data.SqlClient;
+using System.Data;
+using System.Runtime.Remoting.Messaging;
+using System.Net;
 
 namespace Dictionary
 {
+    public class clsStudentDataAccess
+    {
+        // Connection string for the database
+        static private string ConnectionString = "Server=.;Database=C21_DB1;User id=sa;Password=sa123456";
+
+        // Method to retrieve a list of students from the database
+        static public DataTable GetStudentsList()
+        {
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    // SQL query to select all records from the "Students" table
+                    string Query = "SELECT * FROM Students";
+
+                    using (SqlCommand command = new SqlCommand(Query, connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // Load data into the DataTable if the reader has rows
+                            if (reader.HasRows)
+                                table.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Print an error message if an exception occurs
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return table;
+        }
+
+        // Method to retrieve students by page number
+        static public DataTable GetAllStudentsByPageNumber(int Page)
+        {
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    // SQL query to execute a stored procedure that retrieves students by page number
+                    string query = "EXEC SP_GetStudentByPage @PageNumber = @Page";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Page", Page);
+
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // Load data into the DataTable if the reader has rows
+                            if (reader.HasRows)
+                                table.Load(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return table;
+        }
+
+        // Method to get the total number of records in the "Students" table
+        static public int GetNumberOfRecords()
+        {
+            int NumberOfRecord = -1;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    // SQL query to count the number of records in the "Students" table
+                    string query = "SELECT COUNT(*) FROM Students";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        connection.Open();
+
+                        object obj = command.ExecuteScalar();
+
+                        if (int.TryParse(obj.ToString(), out int Rows))
+                            NumberOfRecord = Rows;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return NumberOfRecord;
+        }
+    }
+
+    public class clsStudentDataBusiness
+    {
+
+        public int StudentID { get; set; }
+        public string StudentName { get; set; }
+        public string Subject { get; set; }
+        public int Great { get; set; }
+        public int AGE { get; set; }
+
+        public clsStudentDataBusiness(int studentID, string studentName, string subject, int great, int aGE)
+        {
+            this.StudentID = studentID;
+            this.StudentName = studentName;
+            this.Subject = subject;
+            this.Great = great;
+            this.AGE = aGE;
+        }   
+
+        public clsStudentDataBusiness()
+        {
+        }
+    }
+
     internal class Program
     {
+
+        // Method to retrieve students by page number and populate the dictionary
+        static public void FillDictioinaryWithStudentByPageNumber(Dictionary<string, clsStudentDataBusiness> dStudents, int PageNum)
+        {
+            DataTable students = clsStudentDataAccess.GetAllStudentsByPageNumber(PageNum);
+
+            foreach (DataRow Record in students.Rows)
+            {
+                // Check if the student name is not already in the dictionary
+                if (!dStudents.Any(stu => stu.Value.StudentName == Record["StudentName"].ToString()))
+                {
+                    // Add the student to the dictionary
+                    dStudents.Add(Record["StudentName"].ToString(),
+                        new clsStudentDataBusiness(Convert.ToInt32(Record[0]), Convert.ToString(Record[1]),
+                        Convert.ToString(Record[2]), Convert.ToInt32(Record[3]), Convert.ToInt32(Record[4])));
+                }
+            }
+        }
+
+
+
+
+        // Method to populate the dictionary with all students
+        static public void FillDataIinDictionary(Dictionary<string, clsStudentDataBusiness> dStudents)
+        {
+            int NumberOfPage = clsStudentDataAccess.GetNumberOfRecords() / 10;
+
+            for (int Page = 1; Page <= NumberOfPage; Page++)
+            {
+                FillDictioinaryWithStudentByPageNumber(dStudents, Page);
+            }
+        }
+
+
+
+        // Method to print student information from the dictionary
+        static public void PrintStudentInfo(Dictionary<string, clsStudentDataBusiness> dStudents)
+        {
+            foreach (KeyValuePair<string, clsStudentDataBusiness> item in dStudents)
+            {
+                Console.WriteLine($"Student ID: {item.Value.StudentID}, Student Name: {item.Value.StudentName}, Subject: {item.Value.Subject}, Grade: {item.Value.Great}, Age: {item.Value.AGE}");
+            }
+        }
+
+
+
         static void Main(string[] args)
         {
             /*
@@ -33,142 +209,151 @@ namespace Dictionary
 
 
             //                               WORGING WITH DICTIONARY
-                
-            //Create the dictionary
-            Dictionary<string,int>FruitBasket = new Dictionary<string,int>();
 
-            //Adding element
-            FruitBasket.Add("Apple",5);
-            FruitBasket.Add("Banana", 2);
-            //The following commented line will casue an error because they key is repeated 
-            //FruitBasket.Add("Banana",2);
-            FruitBasket.Add("Orange", 10);
+            ////Create the dictionary
+            //Dictionary<string, int> FruitBasket = new Dictionary<string, int>();
 
-
-            //Accessing and update element
-            FruitBasket["Apple"] = 8;
+            ////Adding element
+            //FruitBasket.Add("Apple", 5);
+            //FruitBasket.Add("Banana", 2);
+            ////The following commented line will casue an error because they key is repeated 
+            ////FruitBasket.Add("Banana",2);
+            //FruitBasket.Add("Orange", 10);
 
 
-            //Iterating through the dictionary
-            Console.WriteLine("Dictionaary content:");
-            foreach(KeyValuePair<string,int>kvp in FruitBasket)
-            {
-                Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
-            }
-
-            //Remonving an element
-            FruitBasket.Remove("Banana");
-            Console.WriteLine("\n\nDictionaary content After removing 'Banana':");
-            foreach (KeyValuePair<string, int> kvp in FruitBasket)
-            {
-                Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
-            }
+            ////Accessing and update element
+            //FruitBasket["Apple"] = 8;
 
 
-            //TryGetValue method return (true or false)
-            if(FruitBasket.TryGetValue("Apple",out int val))
-            {
-                Console.WriteLine("\n\nApple : " + val);
-            }
-            else
-            {
-                Console.WriteLine("\n\nThere is no fruit in bascet!");
-            }
+            ////Iterating through the dictionary
+            //Console.WriteLine("Dictionaary content:");
+            //foreach (KeyValuePair<string, int> kvp in FruitBasket)
+            //{
+            //    Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
+            //}
+
+            ////Remonving an element
+            //FruitBasket.Remove("Banana");
+            //Console.WriteLine("\n\nDictionaary content After removing 'Banana':");
+            //foreach (KeyValuePair<string, int> kvp in FruitBasket)
+            //{
+            //    Console.WriteLine($"Fruit : {kvp.Key}\tQuantity : {kvp.Value}");
+            //}
 
 
-            //the following line will make exception error because Banana is not there
-            //Console.WriteLine($"Banana : {FruitBasket["Banana"]}");
-
-            if (FruitBasket.TryGetValue("\n\nBanana", out int vall))
-            {
-                Console.WriteLine("\n\nBanana : " + vall);
-            }
-            else
-            {
-                Console.WriteLine("\n\nThere is no fruit in basket!");
-            }
+            ////TryGetValue method return (true or false)
+            //if (FruitBasket.TryGetValue("Apple", out int val))
+            //{
+            //    Console.WriteLine("\n\nApple : " + val);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("\n\nThere is no fruit in bascet!");
+            //}
 
 
+            ////the following line will make exception error because Banana is not there
+            ////Console.WriteLine($"Banana : {FruitBasket["Banana"]}");
 
-
-            //Utilizing LINQ with Dictionaries
-
-            //using linq transform items
-            var FruitInfo = FruitBasket.Select(kvp => new { kvp.Key, kvp.Value });
-            Console.WriteLine(("\n\n\nTransformed Items :"));
-            foreach(var item in  FruitInfo) 
-            {
-                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
-            }
-
-            //Using LINQ to filter items 
-            var FiteredFruite = FruitBasket.Where(kvp => kvp.Value > 7);
-            Console.WriteLine(("\n\n\nFiltered Items >7 :"));
-            foreach (var item in FiteredFruite)
-            {
-                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
-            }
-
-            //Using LINQ to sort by value ASC
-            var SortedByQuantityASC = FruitBasket.OrderBy(kvp => kvp.Value);
-            Console.WriteLine(("\n\n\nSorted Items ASC :"));
-            foreach (var item in SortedByQuantityASC)
-            {
-                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
-            }
-
-            //Using LINQ to sort by value DESC
-            var SortedByQuantityDESC = FruitBasket.OrderByDescending(k => k.Value);
-            Console.WriteLine(("\n\n\nSorted Items DESC :"));
-            foreach (var item in SortedByQuantityASC)
-            {
-                Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
-            }
-
-            //using LINQ to aggregate data
-            int TotalQuntity = FruitBasket.Sum(k => k.Value);
-            Console.WriteLine("\n\nTotal Quntity : " + TotalQuntity.ToString());
+            //if (FruitBasket.TryGetValue("\n\nBanana", out int vall))
+            //{
+            //    Console.WriteLine("\n\nBanana : " + vall);
+            //}
+            //else
+            //{
+            //    Console.WriteLine("\n\nThere is no fruit in basket!");
+            //}
 
 
 
-            //Advanced LINQ with Dictionries
-            Dictionary<string, string> FruitCategory = new Dictionary<string, string>
-            {
-                {"Apple","Tree" },
-                {"Banana","Herb" },
-                {"Cherry","Tree" },
-                {"Strawberry","Bush" },
-                {"Raspberry","Bush" }
-            };
-            Console.WriteLine("\n\n\n\n");
-            var Category = FruitCategory.GroupBy(k => k.Value);
-            foreach(var Cat in Category) 
-            {
-                Console.WriteLine("Category : " + Cat.Key);
-                foreach(var group in Cat)
-                {
-                    Console.WriteLine(" - " + group.Key);
-                }
-            }
 
-            //Another Dictionary for Combined Queries
-            Dictionary<string, int> FruitBasket1 = new Dictionary<string, int>
-            {
-                {"Apple",5 },
-                {"Banana",2 },
-                {"Orange",7 }
-            };
+            ////Utilizing LINQ with Dictionaries
 
-            //Combined LINQ queries
-            var SortedFilteredFruits = FruitBasket1
-                .Where(kvp => kvp.Value > 3)
-                .OrderBy(k => k.Key)
-                .Select(k => new { k.Key, k.Value });
-            Console.WriteLine("\n\n\nSorted And Filtered Fruites:");
-            foreach(var item in SortedFilteredFruits)
-            {
-                Console.WriteLine($"Fruit : {item.Key}, Quantity : {item.Value}");
-            }
+            ////using linq transform items
+            //var FruitInfo = FruitBasket.Select(kvp => new { kvp.Key, kvp.Value });
+            //Console.WriteLine(("\n\n\nTransformed Items :"));
+            //foreach (var item in FruitInfo)
+            //{
+            //    Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            //}
+
+            ////Using LINQ to filter items 
+            //var FiteredFruite = FruitBasket.Where(kvp => kvp.Value > 7);
+            //Console.WriteLine(("\n\n\nFiltered Items >7 :"));
+            //foreach (var item in FiteredFruite)
+            //{
+            //    Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            //}
+
+            ////Using LINQ to sort by value ASC
+            //var SortedByQuantityASC = FruitBasket.OrderBy(kvp => kvp.Value);
+            //Console.WriteLine(("\n\n\nSorted Items ASC :"));
+            //foreach (var item in SortedByQuantityASC)
+            //{
+            //    Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            //}
+
+            ////Using LINQ to sort by value DESC
+            //var SortedByQuantityDESC = FruitBasket.OrderByDescending(k => k.Value);
+            //Console.WriteLine(("\n\n\nSorted Items DESC :"));
+            //foreach (var item in SortedByQuantityASC)
+            //{
+            //    Console.WriteLine($"Fruit : {item.Key}\tValue : {item.Value}");
+            //}
+
+            ////using LINQ to aggregate data
+            //int TotalQuntity = FruitBasket.Sum(k => k.Value);
+            //Console.WriteLine("\n\nTotal Quntity : " + TotalQuntity.ToString());
+
+
+
+            ////Advanced LINQ with Dictionries
+            //Dictionary<string, string> FruitCategory = new Dictionary<string, string>
+            //{
+            //    {"Apple","Tree" },
+            //    {"Banana","Herb" },
+            //    {"Cherry","Tree" },
+            //    {"Strawberry","Bush" },
+            //    {"Raspberry","Bush" }
+            //};
+            //Console.WriteLine("\n\n\n\n");
+            //var Category = FruitCategory.GroupBy(k => k.Value);
+            //foreach (var Cat in Category)
+            //{
+            //    Console.WriteLine("Category : " + Cat.Key);
+            //    foreach (var group in Cat)
+            //    {
+            //        Console.WriteLine(" - " + group.Key);
+            //    }
+            //}
+
+            ////Another Dictionary for Combined Queries
+            //Dictionary<string, int> FruitBasket1 = new Dictionary<string, int>
+            //{
+            //    {"Apple",5 },
+            //    {"Banana",2 },
+            //    {"Orange",7 }
+            //};
+
+            ////Combined LINQ queries
+            //var SortedFilteredFruits = FruitBasket1
+            //    .Where(kvp => kvp.Value > 3)
+            //    .OrderBy(k => k.Key)
+            //    .Select(k => new { k.Key, k.Value });
+            //Console.WriteLine("\n\n\nSorted And Filtered Fruites:");
+            //foreach (var item in SortedFilteredFruits)
+            //{
+            //    Console.WriteLine($"Fruit : {item.Key}, Quantity : {item.Value}");
+            //}
+
+
+            Dictionary<string, clsStudentDataBusiness> Students = new Dictionary<string, clsStudentDataBusiness>();
+
+            FillDataIinDictionary(Students);
+
+
+            PrintStudentInfo(Students);
+
 
             Console.ReadKey();
         }
